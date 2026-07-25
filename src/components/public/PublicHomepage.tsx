@@ -49,7 +49,8 @@ interface PublicHomepageProps {
 export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSubtitle, isLoggedIn }: PublicHomepageProps) {
   const router = useRouter()
   const [search, setSearch] = useState('')
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [contextLink, setContextLink] = useState<LinkContextData | null>(null)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
@@ -109,18 +110,28 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
       <AppToolbar
         siteTitle={siteTitle}
         isLoggedIn={isLoggedIn}
-        onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+        isMobileSidebarOpen={mobileSidebarOpen}
+        isDesktopSidebarOpen={desktopSidebarOpen}
+        onMobileMenuClick={() => setMobileSidebarOpen((isOpen) => !isOpen)}
+        onDesktopMenuClick={() => setDesktopSidebarOpen((isOpen) => !isOpen)}
       />
 
       <AppSidebar
         categories={categories}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        isMobileOpen={mobileSidebarOpen}
+        isDesktopOpen={desktopSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
         isLoggedIn={isLoggedIn}
         onNavigate={handleNavigate}
       />
 
-      <div className="w-[calc(100%-var(--drawer-width))] ml-[var(--drawer-width)] max-md:w-full max-md:ml-0 pt-[88px] max-md:pt-[76px] pb-0 px-[40px] max-md:px-0 box-border">
+      <div
+        className={`w-full ml-0 pt-[76px] pb-0 px-0 box-border transition-[width,margin-left] duration-[220ms] md:pt-[88px] md:px-[40px] ${
+          desktopSidebarOpen
+            ? 'md:w-[calc(100%-var(--drawer-width))] md:ml-[var(--drawer-width)]'
+            : 'md:w-full md:ml-0'
+        }`}
+      >
         <div className="max-w-[1500px] mx-auto pb-9 px-0 max-md:px-[18px]">
           <div className="py-3 border-b border-[rgba(145,152,230,0.16)] mb-0 hidden">
             <span className="text-sm font-bold text-[#3f4674]">{siteTitle}</span>
@@ -206,7 +217,13 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
         showBackToTop={showBackToTop}
       />
 
-      <footer className="w-[calc(100%-var(--drawer-width))] ml-[var(--drawer-width)] max-md:w-full max-md:ml-0 my-3.5 mb-5 px-[40px] max-md:px-[18px] text-center text-ink-muted text-sm">
+      <footer
+        className={`w-full ml-0 my-3.5 mb-5 px-[18px] text-center text-ink-muted text-sm transition-[width,margin-left] duration-[220ms] md:px-[40px] ${
+          desktopSidebarOpen
+            ? 'md:w-[calc(100%-var(--drawer-width))] md:ml-[var(--drawer-width)]'
+            : 'md:w-full md:ml-0'
+        }`}
+      >
         &copy; {new Date().getFullYear()} Powered by{' '}
         <a href="https://www.onenav.top/" target="_blank" rel="nofollow" className="text-purple-primary">
           OneNav

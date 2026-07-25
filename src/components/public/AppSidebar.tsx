@@ -16,27 +16,38 @@ interface SidebarCategory {
 
 interface AppSidebarProps {
   categories: SidebarCategory[]
-  isOpen: boolean
-  onClose: () => void
+  isMobileOpen: boolean
+  isDesktopOpen: boolean
+  onMobileClose: () => void
   isLoggedIn: boolean
   onNavigate: (id: number) => void
 }
 
-export function AppSidebar({ categories, isOpen, onClose, isLoggedIn, onNavigate }: AppSidebarProps) {
+export function AppSidebar({
+  categories,
+  isMobileOpen,
+  isDesktopOpen,
+  onMobileClose,
+  isLoggedIn,
+  onNavigate,
+}: AppSidebarProps) {
   return (
     <>
       {/* Overlay for mobile */}
-      {isOpen && (
+      {isMobileOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/20 md:hidden"
-          onClick={onClose}
+          onClick={onMobileClose}
         />
       )}
 
       <aside
-        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 max-md:w-[82vw] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] max-md:transition-transform max-md:duration-[220ms] ${
-          isOpen ? 'max-md:translate-x-0 max-md:opacity-100 max-md:visible' : 'max-md:-translate-x-full max-md:opacity-0 max-md:invisible'
-        } hidden md:block`}
+        id="app-sidebar"
+        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[transform,opacity,visibility] duration-[220ms] ease-out max-md:w-[82vw] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] ${
+          isMobileOpen ? 'max-md:translate-x-0 max-md:opacity-100 max-md:visible' : 'max-md:-translate-x-full max-md:opacity-0 max-md:invisible'
+        } ${
+          isDesktopOpen ? 'md:translate-x-0 md:opacity-100 md:visible' : 'md:-translate-x-full md:opacity-0 md:invisible'
+        }`}
       >
         <ScrollArea className="h-[calc(100vh-72px)] max-md:block">
           <div className="flex justify-stretch drawer-scroll">
@@ -48,14 +59,14 @@ export function AppSidebar({ categories, isOpen, onClose, isLoggedIn, onNavigate
                   colorIndex={idx}
                   onNavigate={(id) => {
                     onNavigate(id)
-                    onClose()
+                    onMobileClose()
                   }}
                 />
               ))}
               <li className="md:hidden pt-2">
                 <a
                   href={isLoggedIn ? '/admin' : '/login'}
-                  onClick={onClose}
+                  onClick={onMobileClose}
                   className="flex items-center gap-3.5 min-h-[50px] rounded-[14px] pl-[20px] pr-2 no-underline hover:bg-[rgba(111,96,255,0.07)] hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all"
                 >
                   <DynamicIcon name={isLoggedIn ? 'LayoutDashboard' : 'LogIn'} className="w-[18px] h-[18px] text-purple-primary" />

@@ -7,21 +7,59 @@ import { Button } from '@/components/ui/button'
 interface AppToolbarProps {
   siteTitle: string
   isLoggedIn: boolean
-  onMenuClick?: () => void
+  isMobileSidebarOpen: boolean
+  isDesktopSidebarOpen: boolean
+  onMobileMenuClick: () => void
+  onDesktopMenuClick: () => void
 }
 
-export function AppToolbar({ siteTitle, isLoggedIn, onMenuClick }: AppToolbarProps) {
+interface SidebarToggleButtonProps {
+  isExpanded: boolean
+  onClick: () => void
+}
+
+function SidebarToggleButton({ isExpanded, onClick }: SidebarToggleButtonProps) {
+  const label = isExpanded ? '收起侧栏' : '展开侧栏'
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="w-9 h-9 mr-1.5 rounded-xl bg-white/10 hover:bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] hover:shadow-[0_8px_18px_rgba(35,30,130,0.12),inset_0_1px_0_rgba(255,255,255,0.22)] hover:-translate-y-px transition-all text-white"
+      onClick={onClick}
+      aria-controls="app-sidebar"
+      aria-expanded={isExpanded}
+      aria-label={label}
+      title={label}
+    >
+      <Menu className="h-6 w-6" />
+    </Button>
+  )
+}
+
+export function AppToolbar({
+  siteTitle,
+  isLoggedIn,
+  isMobileSidebarOpen,
+  isDesktopSidebarOpen,
+  onMobileMenuClick,
+  onDesktopMenuClick,
+}: AppToolbarProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 h-[72px] app-toolbar">
       <div className="h-full flex items-center px-[26px] max-sm:px-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-9 h-9 mr-1.5 rounded-xl bg-white/10 hover:bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] hover:shadow-[0_8px_18px_rgba(35,30,130,0.12),inset_0_1px_0_rgba(255,255,255,0.22)] hover:-translate-y-px transition-all text-white"
-          onClick={onMenuClick}
-        >
-          <Menu className="h-6 w-6" />
-        </Button>
+        <div className="md:hidden">
+          <SidebarToggleButton
+            isExpanded={isMobileSidebarOpen}
+            onClick={onMobileMenuClick}
+          />
+        </div>
+        <div className="hidden md:block">
+          <SidebarToggleButton
+            isExpanded={isDesktopSidebarOpen}
+            onClick={onDesktopMenuClick}
+          />
+        </div>
 
         <Link
           href="/"
