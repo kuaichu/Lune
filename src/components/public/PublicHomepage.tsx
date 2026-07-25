@@ -61,6 +61,23 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    if (!mobileSidebarOpen) return
+
+    const html = document.documentElement
+    const body = document.body
+    const previousHtmlOverflow = html.style.overflow
+    const previousBodyOverflow = body.style.overflow
+
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+
+    return () => {
+      html.style.overflow = previousHtmlOverflow
+      body.style.overflow = previousBodyOverflow
+    }
+  }, [mobileSidebarOpen])
+
   const handleDelete = useCallback(async (data: LinkContextData) => {
     const res = await fetch(`/api/links/${data.id}`, { method: 'DELETE' })
     const json = await res.json()

@@ -43,13 +43,13 @@ export function AppSidebar({
 
       <aside
         id="app-sidebar"
-        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[transform,opacity,visibility] duration-[220ms] ease-out max-md:w-[82vw] max-md:bg-[#fbfbff] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] ${
+        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[transform,opacity,visibility] duration-[220ms] ease-out max-md:w-[56vw] max-md:min-w-[210px] max-md:max-w-[280px] max-md:bg-[#fbfbff] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] ${
           isMobileOpen ? 'max-md:translate-x-0 max-md:opacity-100 max-md:visible' : 'max-md:-translate-x-full max-md:opacity-0 max-md:invisible'
         } ${
           isDesktopOpen ? 'md:translate-x-0 md:opacity-100 md:visible' : 'md:-translate-x-full md:opacity-0 md:invisible'
         }`}
       >
-        <ScrollArea className="h-[calc(100vh-72px)] max-md:block">
+        <ScrollArea className="h-[calc(100vh-72px)] max-md:block max-md:overscroll-contain">
           <div className="flex justify-stretch drawer-scroll">
             <ul className="w-full max-w-none mx-auto py-[18px] px-3 pb-7 space-y-2">
               {categories.map((cat, idx) => (
