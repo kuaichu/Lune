@@ -245,10 +245,64 @@ a, a:hover, a:focus, a:visited {
   transform: rotate(45deg);
 }
 
-/* Keyframe animations for login page */
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Lune motion language: short, quiet, and limited to key surfaces. */
+@keyframes lune-rise-in {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes lune-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lune-rise-enter {
+  animation: lune-rise-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.lune-fade-enter {
+  animation: lune-fade-in 180ms ease-out both;
+}
+
+.lune-route-enter {
+  animation: lune-fade-in 160ms ease-out both;
+}
+
+.lune-delay-1 {
+  animation-delay: 60ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .lune-rise-enter,
+  .lune-fade-enter,
+  .lune-route-enter {
+    animation: none !important;
+  }
+
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="tooltip-content"],
+  [data-slot="collapsible-content"] {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .link-line {
+    transition: none !important;
+  }
+
+  .link-line:hover {
+    transform: none !important;
+  }
 }
 
 .dark {

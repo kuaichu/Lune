@@ -116,7 +116,8 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
       const toolbar = document.querySelector('.app-toolbar') as HTMLElement
       const offset = (toolbar?.offsetHeight || 64) + 14
       const top = el.getBoundingClientRect().top + window.pageYOffset - offset
-      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+      const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+      window.scrollTo({ top: Math.max(0, top), behavior })
     }
   }, [])
 
@@ -143,7 +144,7 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
       />
 
       <div
-        className={`w-full ml-0 pt-[76px] pb-0 px-0 box-border transition-[width,margin-left] duration-[220ms] md:pt-[88px] md:px-[40px] ${
+        className={`w-full ml-0 pt-[76px] pb-0 px-0 box-border transition-[width,margin-left] duration-[220ms] motion-reduce:transition-none md:pt-[88px] md:px-[40px] ${
           desktopSidebarOpen
             ? 'md:w-[calc(100%-var(--drawer-width))] md:ml-[var(--drawer-width)]'
             : 'md:w-full md:ml-0'
@@ -154,12 +155,12 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
             <span className="text-sm font-bold text-[#3f4674]">{siteTitle}</span>
           </div>
 
-          <div className="mt-0">
+          <div className="mt-0 lune-rise-enter">
             <SearchBar value={search} onChange={setSearch} />
           </div>
 
           <div className="pt-7">
-            {filteredCategories.map((cat) => {
+            {filteredCategories.map((cat, index) => {
               const hasOwnLinks = cat.links.length > 0
               const hasChildren = cat.childSections.length > 0
               const flattenSingleChild =
@@ -173,7 +174,9 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
                 <section
                   key={cat.id}
                   id={`category-${cat.id}`}
-                  className="parent-section rounded-[22px] p-5 px-[22px] pb-[26px] mb-8"
+                  className={`parent-section rounded-[22px] p-5 px-[22px] pb-[26px] mb-8 ${
+                    index === 0 ? 'lune-fade-enter lune-delay-1' : ''
+                  }`}
                 >
                   <div className="flex items-center gap-3 min-h-7 mb-5">
                     <div className="parent-title-mark" />
@@ -235,7 +238,7 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
       />
 
       <footer
-        className={`w-full ml-0 my-3.5 mb-5 px-[18px] text-center text-ink-muted text-sm transition-[width,margin-left] duration-[220ms] md:px-[40px] ${
+        className={`w-full ml-0 my-3.5 mb-5 px-[18px] text-center text-ink-muted text-sm transition-[width,margin-left] duration-[220ms] motion-reduce:transition-none md:px-[40px] ${
           desktopSidebarOpen
             ? 'md:w-[calc(100%-var(--drawer-width))] md:ml-[var(--drawer-width)]'
             : 'md:w-full md:ml-0'

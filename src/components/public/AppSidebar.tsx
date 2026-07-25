@@ -33,17 +33,18 @@ export function AppSidebar({
 }: AppSidebarProps) {
   return (
     <>
-      {/* Overlay for mobile */}
-      {isMobileOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/20 md:hidden"
-          onClick={onMobileClose}
-        />
-      )}
+      {/* Overlay stays mounted so both entrance and exit can fade. */}
+      <div
+        aria-hidden="true"
+        className={`fixed inset-0 z-30 bg-black/20 transition-opacity duration-200 ease-out motion-reduce:transition-none md:hidden ${
+          isMobileOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        onClick={onMobileClose}
+      />
 
       <aside
         id="app-sidebar"
-        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[transform,opacity,visibility] duration-[220ms] ease-out max-md:w-[56vw] max-md:min-w-[210px] max-md:max-w-[280px] max-md:bg-[#fbfbff] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] ${
+        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[transform,opacity,visibility] duration-[220ms] ease-out motion-reduce:transition-none max-md:w-[56vw] max-md:min-w-[210px] max-md:max-w-[280px] max-md:bg-[#fbfbff] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] ${
           isMobileOpen ? 'max-md:translate-x-0 max-md:opacity-100 max-md:visible' : 'max-md:-translate-x-full max-md:opacity-0 max-md:invisible'
         } ${
           isDesktopOpen ? 'md:translate-x-0 md:opacity-100 md:visible' : 'md:-translate-x-full md:opacity-0 md:invisible'
@@ -102,7 +103,7 @@ function SidebarCategoryItem({
           onClick={(e) => { e.preventDefault(); onNavigate(category.id) }}
           className="block w-full no-underline drawer-anchor"
         >
-          <div className="flex items-center min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-[rgba(111,96,255,0.07)] hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] hover:translate-x-px transition-all">
+          <div className="flex items-center min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-[rgba(111,96,255,0.07)] hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] hover:translate-x-px transition-all motion-reduce:transition-none motion-reduce:hover:translate-x-0">
             <div className="flex items-center min-w-0">
               <DynamicIcon name={icon} className="w-[18px] h-[18px] mr-3.5 shrink-0" style={{ color: iconColor }} />
               <span className="text-[14.5px] font-bold text-[#444b78]">{category.name}</span>
@@ -119,7 +120,9 @@ function SidebarCategoryItem({
         <CollapsibleTrigger className="flex items-center w-full min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-[rgba(111,96,255,0.07)] hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all group">
           <DynamicIcon name={icon} className="w-[18px] h-[18px] mr-3.5 shrink-0" style={{ color: iconColor }} />
           <span className="flex-1 text-left text-[14.5px] font-bold text-[#444b78]">{category.name}</span>
-          <ChevronDown className="w-4 h-4 text-[#8a91aa] shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+          <span className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-data-[panel-open]:rotate-180">
+            <ChevronDown className="w-4 h-4 text-[#8a91aa]" />
+          </span>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <ul className="pl-0 pt-1">

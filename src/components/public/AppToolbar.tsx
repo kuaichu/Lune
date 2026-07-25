@@ -25,7 +25,7 @@ function SidebarToggleButton({ isExpanded, onClick }: SidebarToggleButtonProps) 
     <Button
       variant="ghost"
       size="icon"
-      className="w-9 h-9 mr-1.5 rounded-xl bg-white/10 hover:bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] hover:shadow-[0_8px_18px_rgba(35,30,130,0.12),inset_0_1px_0_rgba(255,255,255,0.22)] hover:-translate-y-px transition-all text-white"
+      className="w-9 h-9 mr-1.5 rounded-xl bg-white/10 hover:bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] hover:shadow-[0_8px_18px_rgba(35,30,130,0.12),inset_0_1px_0_rgba(255,255,255,0.22)] hover:-translate-y-px transition-all motion-reduce:transition-none motion-reduce:hover:translate-y-0 text-white"
       onClick={onClick}
       aria-controls="app-sidebar"
       aria-expanded={isExpanded}

@@ -76,7 +76,7 @@ export default function LoginPage() {
           {STARS.map((star, index) => (
             <span
               key={index}
-              className="absolute rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.58)] animate-pulse"
+              className="absolute rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.58)] animate-pulse motion-reduce:animate-none"
               style={{
                 left: star.left,
                 top: star.top,
@@ -209,7 +209,7 @@ export default function LoginPage() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_36%_22%,rgba(209,196,255,0.32),transparent_36%),radial-gradient(ellipse_at_78%_76%,rgba(137,104,255,0.12),transparent_34%),linear-gradient(120deg,#fbf9ff_0%,#f7f3ff_52%,#fdfcff_100%)]" />
           <div className="absolute inset-y-0 left-0 hidden w-36 bg-gradient-to-r from-[#d9cdfb]/50 to-transparent blur-xl lg:block" />
 
-          <div className="relative z-10 w-full max-w-[438px] animate-[fade-in_0.6s_ease-out]">
+          <div className="relative z-10 w-full max-w-[438px] lune-rise-enter">
             <div className="rounded-[26px] border border-white/70 bg-white/68 px-7 pb-8 pt-9 shadow-[0_24px_70px_rgba(93,76,160,0.12),inset_0_1px_0_rgba(255,255,255,0.88)] backdrop-blur-2xl sm:px-9 sm:pb-9 sm:pt-10">
               <div className="mb-7 flex justify-center">
                 <LuneMark />
@@ -259,7 +259,7 @@ export default function LoginPage() {
                 </div>
 
                 {error && (
-                  <p className="rounded-[14px] border border-red-100 bg-red-50/70 px-4 py-3 text-center text-[13px] font-medium text-red-500">
+                  <p className="rounded-[14px] border border-red-100 bg-red-50/70 px-4 py-3 text-center text-[13px] font-medium text-red-500 lune-fade-enter">
                     {error}
                   </p>
                 )}
@@ -267,9 +267,13 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="mt-6 h-[54px] w-full rounded-[15px] bg-gradient-to-r from-[#7868ff] via-[#725df0] to-[#a24eff] text-[15px] font-extrabold tracking-normal text-white shadow-[0_16px_34px_rgba(117,94,244,0.28)] transition-all duration-200 hover:-translate-y-px hover:from-[#8576ff] hover:via-[#7d67f5] hover:to-[#ad5aff] hover:shadow-[0_20px_42px_rgba(117,94,244,0.34)] active:translate-y-0 disabled:opacity-65 disabled:hover:translate-y-0"
+                  className="mt-6 h-[54px] w-full rounded-[15px] bg-gradient-to-r from-[#7868ff] via-[#725df0] to-[#a24eff] text-[15px] font-extrabold tracking-normal text-white shadow-[0_16px_34px_rgba(117,94,244,0.28)] transition-all duration-200 hover:-translate-y-px hover:from-[#8576ff] hover:via-[#7d67f5] hover:to-[#ad5aff] hover:shadow-[0_20px_42px_rgba(117,94,244,0.34)] active:translate-y-0 disabled:opacity-65 disabled:hover:translate-y-0 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 >
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : '进入 Lune'}
+                  {loading ? (
+                    <span className="inline-flex animate-spin motion-reduce:animate-none">
+                      <Loader2 className="h-5 w-5" />
+                    </span>
+                  ) : '进入 Lune'}
                 </Button>
               </form>
             </div>

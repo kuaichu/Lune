@@ -165,7 +165,7 @@ export function CategoriesClient({ initialCategories }: { initialCategories: Cat
 
   return (
     <div className="relative min-h-[calc(100vh-78px)] overflow-hidden px-8 pb-12 pt-10 max-md:px-4">
-      <div className="pointer-events-none fixed bottom-0 left-[var(--admin-sidebar-width)] right-0 top-[78px] z-0 bg-[radial-gradient(circle_900px_at_360px_120px,rgba(178,154,255,0.18),transparent_48%),radial-gradient(circle_780px_at_calc(100%-180px)_520px,rgba(214,204,255,0.14),transparent_52%),linear-gradient(180deg,#f8f7ff_0%,#f9faff_100%)] transition-[left] duration-300 max-md:left-0 max-md:top-16" />
+      <div className="pointer-events-none fixed bottom-0 left-[var(--admin-sidebar-width)] right-0 top-[78px] z-0 bg-[radial-gradient(circle_900px_at_360px_120px,rgba(178,154,255,0.18),transparent_48%),radial-gradient(circle_780px_at_calc(100%-180px)_520px,rgba(214,204,255,0.14),transparent_52%),linear-gradient(180deg,#f8f7ff_0%,#f9faff_100%)] transition-[left] duration-300 motion-reduce:transition-none max-md:left-0 max-md:top-16" />
       <div className="relative z-10 mx-auto max-w-[1420px]">
         <div className="mb-7 flex items-end justify-between gap-4 max-md:flex-col max-md:items-start">
           <div>

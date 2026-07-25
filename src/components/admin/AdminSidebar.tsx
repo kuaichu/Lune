@@ -33,7 +33,7 @@ export function AdminSidebar({
   return (
     <aside
       className={cn(
-        'fixed bottom-0 left-0 top-0 z-50 border-r border-[#ebe7f8] bg-white/78 shadow-[18px_0_50px_rgba(77,68,124,0.04)] backdrop-blur-2xl transition-[width] duration-300 max-md:hidden',
+        'fixed bottom-0 left-0 top-0 z-50 border-r border-[#ebe7f8] bg-white/78 shadow-[18px_0_50px_rgba(77,68,124,0.04)] backdrop-blur-2xl transition-[width] duration-300 motion-reduce:transition-none max-md:hidden',
         collapsed ? 'w-[88px]' : 'w-[250px]'
       )}
     >
@@ -52,7 +52,7 @@ export function AdminSidebar({
                 href={item.href}
                 title={collapsed ? item.label : undefined}
                 className={cn(
-                  'group flex h-[52px] items-center gap-3 rounded-[14px] text-[15px] font-extrabold transition-all',
+                  'group flex h-[52px] items-center gap-3 rounded-[14px] text-[15px] font-extrabold transition-all motion-reduce:transition-none',
                   collapsed ? 'justify-center px-0' : 'px-4',
                   isActive
                     ? 'bg-gradient-to-r from-[#f0ebff] to-[#f8f6ff] text-[#6f60ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]'
@@ -70,7 +70,7 @@ export function AdminSidebar({
           type="button"
           onClick={onToggleCollapsed}
           className={cn(
-            'mt-auto flex h-12 items-center rounded-[14px] bg-[#f8f6ff] text-sm font-bold text-[#7c83a5] transition-all hover:bg-[#f0ebff] hover:text-[#6f60ff]',
+            'mt-auto flex h-12 items-center rounded-[14px] bg-[#f8f6ff] text-sm font-bold text-[#7c83a5] transition-all motion-reduce:transition-none hover:bg-[#f0ebff] hover:text-[#6f60ff]',
             collapsed ? 'justify-center px-0' : 'justify-between px-4'
           )}
           title={collapsed ? '展开菜单' : '收起菜单'}
