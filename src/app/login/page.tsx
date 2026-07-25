@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
+  ArrowLeft,
   Bookmark,
   Eye,
   EyeOff,
@@ -69,6 +71,14 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f8f5ff] text-[#17143f]">
+      <Link
+        href="/"
+        className="fixed left-4 top-4 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-[#ded7f7] bg-white/80 px-4 text-sm font-extrabold text-[#6254b6] shadow-[0_10px_30px_rgba(90,72,150,0.10)] backdrop-blur-xl transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-x-0.5 hover:bg-white hover:shadow-[0_14px_34px_rgba(90,72,150,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7967ef]/55 focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-x-0 lg:left-7 lg:top-7 lg:border-white/20 lg:bg-white/10 lg:text-white lg:shadow-[0_12px_34px_rgba(4,2,22,0.18)] lg:hover:bg-white/15 lg:focus-visible:ring-white/70 lg:focus-visible:ring-offset-[#19133f]"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        <span>返回主页</span>
+      </Link>
+
       <div className="flex min-h-screen">
         <section className="relative hidden min-h-screen w-[45%] overflow-hidden bg-[#110b35] lg:block">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_34%_36%,rgba(133,105,255,0.30),transparent_30%),radial-gradient(circle_at_72%_70%,rgba(196,181,253,0.16),transparent_30%),linear-gradient(145deg,#211b4f_0%,#242040_45%,#110d34_100%)]" />
