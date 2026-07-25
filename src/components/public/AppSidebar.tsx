@@ -43,7 +43,7 @@ export function AppSidebar({
 
       <aside
         id="app-sidebar"
-        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[transform,opacity,visibility] duration-[220ms] ease-out max-md:w-[82vw] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] ${
+        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[transform,opacity,visibility] duration-[220ms] ease-out max-md:w-[82vw] max-md:bg-[#fbfbff] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] ${
           isMobileOpen ? 'max-md:translate-x-0 max-md:opacity-100 max-md:visible' : 'max-md:-translate-x-full max-md:opacity-0 max-md:invisible'
         } ${
           isDesktopOpen ? 'md:translate-x-0 md:opacity-100 md:visible' : 'md:-translate-x-full md:opacity-0 md:invisible'
