@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int        @id @default(autoincrement())
+  name        String
+  parentId    Int?       @map("fid")
+  property    Int        @default(0)
+  weight      Int        @default(0)
+  description String     @default("")
+  fontIcon    String     @default("") @map("font_icon")
+  addTime     Int        @default(0) @map("add_time")
+  upTime      Int        @default(0) @map("up_time")
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  children Category[] @relation("CategoryHierarchy")
+  links    Link[]
+
+  @@map("on_categorys")
+}
+
+model Link {
+  id              Int      @id @default(autoincrement())
+  categoryId      Int      @map("fid")
+  title           String
+  url             String
+  urlStandby      String   @default("") @map("url_standby")
+  description     String   @default("")
+  weight          Int      @default(0)
+  property        Int      @default(0)
+  fontIcon        String   @default("") @map("font_icon")
+  topping         Int      @default(0)
+  checkStatus     Int      @default(0) @map("check_status")
+  lastCheckedTime String   @default("") @map("last_checked_time")
+  addTime         Int      @default(0) @map("add_time")
+  upTime          Int      @default(0) @map("up_time")
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@map("on_links")
+}
+
+model Option {
+  id     Int    @id @default(autoincrement())
+  key    String @unique
+  value  String
+  extend String @default("")
+
+  @@map("on_options")
+}
