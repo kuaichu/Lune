@@ -6,7 +6,7 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "test": "tsx --test tests/auth.test.ts tests/category-domain.test.ts tests/category-visibility.test.ts tests/normalize-category-roots.test.ts",
+    "test": "tsx --test tests/auth.test.ts tests/admin-auth.integration.test.ts tests/category-domain.test.ts tests/category-visibility.test.ts tests/normalize-category-roots.test.ts",
     "lint": "eslint"
   },
   "dependencies": {

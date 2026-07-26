@@ -1,10 +1,10 @@
-import { getCurrentSession } from '@/lib/auth-server'
+import { type NextRequest } from 'next/server'
+import { requireAdminApiSession } from '@/lib/auth-server'
 import { prisma } from '@/lib/prisma'
 
-export async function GET() {
-  if (!(await getCurrentSession())) {
-    return Response.json({ code: -1, err_msg: '未登录' }, { status: 401 })
-  }
+export async function GET(request: NextRequest) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
 
   const [catNum, linkNum] = await Promise.all([
     prisma.category.count(),

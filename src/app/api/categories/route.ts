@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { validateCategoryParentChange } from '@/lib/category-domain'
+import { requireAdminApiSession } from '@/lib/auth-server'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const categories = await prisma.category.findMany({
     orderBy: { weight: 'desc' },
     include: {
@@ -13,6 +17,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const body = await request.json().catch(() => null)
   if (!body || typeof body !== 'object') {
     return NextResponse.json({ code: -2000, err_msg: '请求内容必须是 JSON 对象' }, { status: 400 })

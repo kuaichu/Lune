@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { validateCategoryParentChange } from '@/lib/category-domain'
+import { requireAdminApiSession } from '@/lib/auth-server'
 
 function parseId(value: string) {
   const id = Number(value)
@@ -11,6 +12,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const { id: idStr } = await params
   const id = parseId(idStr)
   if (id === null) {
@@ -27,6 +31,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const { id: idStr } = await params
   const id = parseId(idStr)
   if (id === null) {
@@ -86,6 +93,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const { id: idStr } = await params
   const id = parseId(idStr)
   if (id === null) {

@@ -3,6 +3,8 @@ import 'server-only'
 import bcrypt from 'bcryptjs'
 import { createHash } from 'node:crypto'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { type NextRequest, NextResponse } from 'next/server'
 
 import { prisma } from './prisma'
 import { SESSION_COOKIE_NAME, type Session, verifySessionToken } from './auth'
@@ -59,4 +61,17 @@ export async function authenticateCredentials(
 export async function getCurrentSession(): Promise<Session | null> {
   const cookieStore = await cookies()
   return verifySessionToken(cookieStore.get(SESSION_COOKIE_NAME)?.value)
+}
+
+export function requireAdminApiSession(request: NextRequest): NextResponse | null {
+  const session = verifySessionToken(request.cookies.get(SESSION_COOKIE_NAME)?.value)
+  if (session) return null
+
+  return NextResponse.json({ code: -1, err_msg: '未登录' }, { status: 401 })
+}
+
+export async function requireAdminPageSession(): Promise<Session> {
+  const session = await getCurrentSession()
+  if (!session) redirect('/login')
+  return session
 }

@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { validateLinkCategory } from '@/lib/category-domain'
+import { requireAdminApiSession } from '@/lib/auth-server'
 
 export async function GET(request: NextRequest) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const { searchParams } = new URL(request.url)
   const categoryId = searchParams.get('categoryId')
   const page = parseInt(searchParams.get('page') || '1')
@@ -25,6 +29,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const body = await request.json().catch(() => null)
   if (!body || typeof body !== 'object') {
     return NextResponse.json({ code: -2000, err_msg: '请求内容必须是 JSON 对象' }, { status: 400 })

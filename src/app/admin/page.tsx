@@ -11,10 +11,13 @@ import {
   Sparkle,
 } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
+import { requireAdminPageSession } from '@/lib/auth-server'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminDashboard() {
+  await requireAdminPageSession()
+
   const [categoryCount, linkCount, privateLinkCount, childCategoryCount, recentLinks, categories] =
     await Promise.all([
       prisma.category.count(),

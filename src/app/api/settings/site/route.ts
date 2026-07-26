@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requireAdminApiSession } from '@/lib/auth-server'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const option = await prisma.option.findUnique({ where: { key: 's_site' } })
   let settings = null
   if (option?.value) {
@@ -15,6 +19,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const unauthorized = requireAdminApiSession(request)
+  if (unauthorized) return unauthorized
+
   const body = await request.json()
   const value = JSON.stringify({
     title: body.title || 'OneNav',
