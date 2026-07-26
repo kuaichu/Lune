@@ -77,7 +77,6 @@ export default async function HomePage() {
       categories={serialized}
       categoryOptions={categoryOptions}
       siteTitle={siteTitle}
-      siteSubtitle=""
       isLoggedIn={isLoggedIn}
     />
   )

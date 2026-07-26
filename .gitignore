@@ -1,0 +1,80 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+/.playwright-cli/
+/output/
+/.backup/
+
+# next.js
+/.next/
+/.next2/
+/out/
+
+# production
+/build
+/dist/
+
+# local reference project and databases
+/Old Reference Project/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+
+# browser test output
+/playwright-report/
+/test-results/
+/blob-report/
+
+# internal working notes and reports
+/AGENTS.md
+/CLAUDE.md
+/notes.md
+/task_plan.md
+/security_*_report.md
+
+# misc
+.DS_Store
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.bak
+*.bak-*
+*.old
+*.orig
+*.tmp
+*.temp
+*~
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  ChevronRight,
   ChevronLeft,
   FolderOpen,
   LayoutDashboard,
@@ -33,17 +32,26 @@ export function AdminSidebar({
   return (
     <aside
       className={cn(
-        'fixed bottom-0 left-0 top-0 z-50 border-r border-[#ebe7f8] bg-white/78 shadow-[18px_0_50px_rgba(77,68,124,0.04)] backdrop-blur-2xl transition-[width] duration-300 motion-reduce:transition-none max-md:hidden',
+        'fixed bottom-0 left-0 top-0 z-50 overflow-x-clip border-r border-[#ebe7f8] bg-white/78 shadow-[18px_0_50px_rgba(77,68,124,0.04)] backdrop-blur-2xl transition-[width] duration-300 ease-out motion-reduce:transition-none max-md:hidden',
         collapsed ? 'w-[88px]' : 'w-[250px]'
       )}
     >
-      <div className={cn('flex h-full flex-col pb-7 pt-7', collapsed ? 'px-4' : 'px-6')}>
-        <Link href="/" className={cn('flex h-12 items-center gap-3 no-underline', collapsed && 'justify-center')} title="Lune">
-          <LuneAdminMark />
-          {!collapsed && <span className="text-[25px] font-extrabold tracking-normal text-[#10133e]">Lune</span>}
+      <div className="flex h-full flex-col px-4 pb-7 pt-7">
+        <Link href="/" className="grid h-12 grid-cols-[56px_minmax(0,1fr)] items-center no-underline" title="Lune">
+          <span className="flex justify-center">
+            <LuneAdminMark />
+          </span>
+          <span
+            className={cn(
+              'block overflow-hidden whitespace-nowrap text-[25px] font-extrabold tracking-normal text-[#10133e] transition-[max-width,opacity] duration-200 ease-out motion-reduce:transition-none',
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+            )}
+          >
+            Lune
+          </span>
         </Link>
 
-        <nav className="mt-14 space-y-2">
+        <nav id="admin-navigation" className="mt-14 space-y-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))
             return (
@@ -52,15 +60,23 @@ export function AdminSidebar({
                 href={item.href}
                 title={collapsed ? item.label : undefined}
                 className={cn(
-                  'group flex h-[52px] items-center gap-3 rounded-[14px] text-[15px] font-extrabold transition-all motion-reduce:transition-none',
-                  collapsed ? 'justify-center px-0' : 'px-4',
+                  'group grid h-[52px] grid-cols-[56px_minmax(0,1fr)] items-center rounded-[14px] text-[15px] font-extrabold transition-[background-color,color,box-shadow] motion-reduce:transition-none',
                   isActive
                     ? 'bg-gradient-to-r from-[#f0ebff] to-[#f8f6ff] text-[#6f60ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]'
                     : 'text-[#293054] hover:bg-[#f7f4ff] hover:text-[#6f60ff]'
                 )}
               >
-                <item.icon className={cn('h-5 w-5', isActive ? 'text-[#735fff]' : 'text-[#8690b2] group-hover:text-[#735fff]')} />
-                {!collapsed && item.label}
+                <span className="flex justify-center">
+                  <item.icon className={cn('h-5 w-5', isActive ? 'text-[#735fff]' : 'text-[#8690b2] group-hover:text-[#735fff]')} />
+                </span>
+                <span
+                  className={cn(
+                    'block overflow-hidden whitespace-nowrap transition-[max-width,opacity] duration-200 ease-out motion-reduce:transition-none',
+                    collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+                  )}
+                >
+                  {item.label}
+                </span>
               </Link>
             )
           })}
@@ -70,19 +86,29 @@ export function AdminSidebar({
           type="button"
           onClick={onToggleCollapsed}
           className={cn(
-            'mt-auto flex h-12 items-center rounded-[14px] bg-[#f8f6ff] text-sm font-bold text-[#7c83a5] transition-all motion-reduce:transition-none hover:bg-[#f0ebff] hover:text-[#6f60ff]',
-            collapsed ? 'justify-center px-0' : 'justify-between px-4'
+            'mt-auto grid h-12 grid-cols-[56px_minmax(0,1fr)] items-center rounded-[14px] bg-[#f8f6ff] text-sm font-bold text-[#7c83a5] transition-[background-color,color] motion-reduce:transition-none hover:bg-[#f0ebff] hover:text-[#6f60ff]'
           )}
           title={collapsed ? '展开菜单' : '收起菜单'}
           aria-label={collapsed ? '展开菜单' : '收起菜单'}
+          aria-controls="admin-navigation"
+          aria-expanded={!collapsed}
         >
-          {!collapsed && (
-            <span className="inline-flex items-center gap-2">
-              <ChevronLeft className="h-4 w-4" />
-              收起
-            </span>
-          )}
-          {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-4 w-4" />}
+          <span className="flex justify-center">
+            <ChevronLeft
+              className={cn(
+                'h-4 w-4 transition-transform duration-300 ease-out motion-reduce:transition-none',
+                collapsed && 'rotate-180'
+              )}
+            />
+          </span>
+          <span
+            className={cn(
+              'block overflow-hidden whitespace-nowrap text-left transition-[max-width,opacity] duration-200 ease-out motion-reduce:transition-none',
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+            )}
+          >
+            收起
+          </span>
         </button>
       </div>
     </aside>

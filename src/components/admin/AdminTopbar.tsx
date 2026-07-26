@@ -31,7 +31,7 @@ export function AdminTopbar({ collapsed }: { collapsed: boolean }) {
 
   return (
     <header className={cn(
-      'fixed top-0 right-0 z-40 flex h-[78px] items-center justify-between border-b border-[#ebe7f8] bg-[#faf8ff]/82 px-8 backdrop-blur-2xl transition-[left] duration-300 motion-reduce:transition-none max-md:left-0 max-md:h-16 max-md:px-4',
+      'fixed top-0 right-0 z-40 flex h-[78px] items-center justify-between border-b border-[#ebe7f8] bg-[#faf8ff]/82 px-8 backdrop-blur-2xl transition-[left] duration-300 ease-out motion-reduce:transition-none max-md:left-0 max-md:h-16 max-md:px-4',
       collapsed ? 'left-[88px]' : 'left-[250px]'
     )}>
       <Link

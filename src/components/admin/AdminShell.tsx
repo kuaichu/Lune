@@ -19,7 +19,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <AdminTopbar collapsed={collapsed} />
       <main
         className={cn(
-          'min-h-[calc(100vh-78px)] pt-[78px] transition-[margin] duration-300 motion-reduce:transition-none max-md:ml-0 max-md:pt-16',
+          'min-h-[calc(100vh-78px)] pt-[78px] transition-[margin] duration-300 ease-out motion-reduce:transition-none max-md:ml-0 max-md:pt-16',
           collapsed ? 'ml-[88px]' : 'ml-[250px]'
         )}
       >

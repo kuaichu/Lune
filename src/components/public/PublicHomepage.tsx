@@ -28,11 +28,10 @@ interface PublicHomepageProps {
   categories: PublicCategoryData[]
   categoryOptions: { id: number; name: string }[]
   siteTitle: string
-  siteSubtitle: string
   isLoggedIn: boolean
 }
 
-export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSubtitle, isLoggedIn }: PublicHomepageProps) {
+export function PublicHomepage({ categories, categoryOptions, siteTitle, isLoggedIn }: PublicHomepageProps) {
   const router = useRouter()
   const [search, setSearch] = useState('')
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
@@ -150,7 +149,7 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
       />
 
       <div
-        className={`w-full ml-0 pt-[76px] pb-0 px-0 box-border transition-[width,margin-left] duration-[220ms] motion-reduce:transition-none md:pt-[88px] md:px-[40px] ${
+        className={`w-full ml-0 pt-[76px] pb-0 px-0 box-border transition-[width,margin-left] duration-[220ms] ease-out motion-reduce:transition-none md:pt-[88px] md:px-[40px] ${
           desktopSidebarOpen
             ? 'md:w-[calc(100%-var(--drawer-width))] md:ml-[var(--drawer-width)]'
             : 'md:w-full md:ml-0'
@@ -271,7 +270,7 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
       </Dialog>
 
       <footer
-        className={`w-full ml-0 my-3.5 mb-5 px-[18px] text-center text-ink-muted text-sm transition-[width,margin-left] duration-[220ms] motion-reduce:transition-none md:px-[40px] ${
+        className={`w-full ml-0 my-3.5 mb-5 px-[18px] text-center text-ink-muted text-sm transition-[width,margin-left] duration-[220ms] ease-out motion-reduce:transition-none md:px-[40px] ${
           desktopSidebarOpen
             ? 'md:w-[calc(100%-var(--drawer-width))] md:ml-[var(--drawer-width)]'
             : 'md:w-full md:ml-0'
