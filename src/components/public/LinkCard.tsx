@@ -3,12 +3,9 @@ import { Lock } from 'lucide-react'
 import { faviconUrl } from '@/lib/icons'
 
 interface LinkCardProps {
-  id: number
   title: string
   url: string
-  description: string
   property: number
-  onContextMenu?: (e: React.MouseEvent, linkData: LinkContextData) => void
 }
 
 export interface LinkContextData {
@@ -17,7 +14,7 @@ export interface LinkContextData {
   url: string
 }
 
-export function LinkCard({ id, title, url, description, property, onContextMenu }: LinkCardProps) {
+export function LinkCard({ title, url, property }: LinkCardProps) {
   const isPrivate = property === 1
   const favicon = faviconUrl(url)
 
@@ -27,9 +24,6 @@ export function LinkCard({ id, title, url, description, property, onContextMenu 
       target="_blank"
       rel="noopener noreferrer"
       className="block min-w-0 no-underline text-inherit hover:text-inherit focus:text-inherit visited:text-inherit"
-      onContextMenu={(e) => {
-        onContextMenu?.(e, { id, title, url })
-      }}
     >
       <div className="link-line relative h-14 w-full px-4 flex items-center gap-3 overflow-visible">
         {isPrivate && <div className="angle"><span /></div>}

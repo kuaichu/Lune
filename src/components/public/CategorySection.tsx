@@ -1,4 +1,5 @@
 import { LinkCard, LinkContextData } from './LinkCard'
+import { LinkContextMenu } from './LinkContextMenu'
 import { getIconForCategory } from '@/lib/icons'
 import { Lock } from 'lucide-react'
 import { DynamicIcon } from '@/components/shared/DynamicIcon'
@@ -23,14 +24,18 @@ interface CategorySectionProps {
   category: CategoryData
   showTitle?: boolean
   isChild?: boolean
-  onLinkContextMenu?: (e: React.MouseEvent, data: LinkContextData) => void
+  isLoggedIn: boolean
+  onLinkOpen?: (data: LinkContextData) => void
+  onLinkDelete?: (data: LinkContextData) => void
 }
 
 export function CategorySection({
   category,
   showTitle = true,
   isChild = false,
-  onLinkContextMenu,
+  isLoggedIn,
+  onLinkOpen,
+  onLinkDelete,
 }: CategorySectionProps) {
   const { id, name, property, fontIcon, links } = category
   if (!links || links.length === 0) return null
@@ -53,15 +58,19 @@ export function CategorySection({
       )}
       <div className="grid grid-cols-6 max-[1500px]:grid-cols-6 max-[1320px]:grid-cols-5 max-[1160px]:grid-cols-4 max-[960px]:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4 items-stretch">
         {links.map((link) => (
-          <LinkCard
+          <LinkContextMenu
             key={link.id}
-            id={link.id}
-            title={link.title}
-            url={link.url}
-            description={link.description}
-            property={link.property}
-            onContextMenu={onLinkContextMenu}
-          />
+            linkData={{ id: link.id, title: link.title, url: link.url }}
+            isLoggedIn={isLoggedIn}
+            onOpen={onLinkOpen}
+            onDelete={onLinkDelete}
+          >
+            <LinkCard
+              title={link.title}
+              url={link.url}
+              property={link.property}
+            />
+          </LinkContextMenu>
         ))}
       </div>
     </section>

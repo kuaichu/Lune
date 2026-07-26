@@ -1,8 +1,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { ChevronLeft, ChevronRight, ExternalLink, FolderOpen, Globe, Link as LinkIcon, Lock, Pencil, Plus, Search, Sparkle, Trash2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { ChevronLeft, ChevronRight, Download, ExternalLink, FolderOpen, Globe, Link as LinkIcon, Lock, Pencil, Plus, Search, Sparkle, Trash2 } from 'lucide-react'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -181,9 +181,21 @@ export function LinksClient({
               当前载入 {links.length} 个链接，{privateCount} 个私有链接
             </p>
           </div>
-          <Button onClick={openNew} className="h-11 rounded-[14px] bg-gradient-to-r from-[#7868ff] to-[#a24eff] px-5 font-extrabold text-white shadow-[0_14px_30px_rgba(117,94,244,0.22)]">
-            <Plus className="mr-2 h-4 w-4" /> 添加链接
-          </Button>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="/api/links/export"
+              download="lune-bookmarks.html"
+              className={buttonVariants({
+                variant: 'outline',
+                className: 'h-11 rounded-[14px] border-[#ddd6f7] bg-white/80 px-5 font-extrabold text-[#5f55a5]',
+              })}
+            >
+              <Download className="mr-2 h-4 w-4" /> 导出书签
+            </a>
+            <Button onClick={openNew} className="h-11 rounded-[14px] bg-gradient-to-r from-[#7868ff] to-[#a24eff] px-5 font-extrabold text-white shadow-[0_14px_30px_rgba(117,94,244,0.22)]">
+              <Plus className="mr-2 h-4 w-4" /> 添加链接
+            </Button>
+          </div>
         </div>
 
         <section className="mb-5 rounded-[18px] border border-white/78 bg-white/72 p-5 shadow-[0_18px_42px_rgba(77,68,124,0.07)] backdrop-blur-xl">

@@ -70,11 +70,12 @@ function request(
 }
 
 async function loadProtectedRoutes() {
-  const [categories, category, links, link, settings, info] = await Promise.all([
+  const [categories, category, links, link, exportLinks, settings, info] = await Promise.all([
     import('../src/app/api/categories/route'),
     import('../src/app/api/categories/[id]/route'),
     import('../src/app/api/links/route'),
     import('../src/app/api/links/[id]/route'),
+    import('../src/app/api/links/export/route'),
     import('../src/app/api/settings/site/route'),
     import('../src/app/api/info/route'),
   ])
@@ -91,6 +92,7 @@ async function loadProtectedRoutes() {
         ['PUT /api/categories/[id]', () => category.PUT(request('/api/categories/1', { method: 'PUT', token, body: {} }), categoryContext)],
         ['DELETE /api/categories/[id]', () => category.DELETE(request('/api/categories/1', { method: 'DELETE', token }), categoryContext)],
         ['GET /api/links', () => links.GET(request('/api/links', { token }))],
+        ['GET /api/links/export', () => exportLinks.GET(request('/api/links/export', { token }))],
         ['POST /api/links', () => links.POST(request('/api/links', { method: 'POST', token, body: {} }))],
         ['GET /api/links/[id]', () => link.GET(request('/api/links/1', { token }), linkContext)],
         ['PUT /api/links/[id]', () => link.PUT(request('/api/links/1', { method: 'PUT', token, body: {} }), linkContext)],
@@ -153,6 +155,101 @@ test('a valid session preserves all management handler GET and write behavior', 
     const response = await call()
     assert.equal(response.status, 200, name)
     assert.equal((await response.json()).code, 0, name)
+  }
+})
+
+test('a valid session exports every bookmark with download headers and no internal data', async () => {
+  process.env.AUTH_SECRET = TEST_SECRET
+  const prisma = await import('./fixtures/prisma')
+  const links = Array.from({ length: 1002 }, (_, index) => ({
+    id: index + 1,
+    categoryId: index === 1 ? 2 : 1,
+    title: index === 1 ? 'Private bookmark' : `Bookmark ${index + 1}`,
+    url: `https://example.com/bookmarks/${index + 1}`,
+    description: index === 0 ? 'First bookmark' : '',
+    weight: 0,
+    property: index === 1 ? 1 : 0,
+    addTime: 1_700_000_000 + index,
+  }))
+
+  prisma.installPrismaStore({
+    categories: [
+      { id: 1, name: 'Root folder', parentId: null, weight: 10, addTime: 1_700_000_000 },
+      { id: 2, name: 'Private child', parentId: 1, weight: 5, addTime: 1_700_000_001, property: 1 },
+    ],
+    links,
+  })
+  prisma.resetPrismaCalls()
+
+  try {
+    const exportRoute = await import('../src/app/api/links/export/route')
+    const response = await exportRoute.GET(
+      request('/api/links/export', { token: createSessionToken('admin') })
+    )
+
+    assert.equal(response.status, 200)
+    assert.equal(response.headers.get('content-type'), 'text/html; charset=utf-8')
+    assert.equal(
+      response.headers.get('content-disposition'),
+      'attachment; filename="lune-bookmarks.html"'
+    )
+    assert.equal(response.headers.get('cache-control'), 'private, no-store')
+
+    const html = await response.text()
+    assert.match(html, />Bookmark 1<\/A>/)
+    assert.match(html, />Bookmark 1002<\/A>/, 'the export must not stop at 1000 links')
+    assert.match(html, />Private bookmark<\/A>/, 'admin backups include private links')
+    assert.doesNotMatch(html, /onenav\.db|DATABASE_URL|endpoint-auth-test-secret|Error:|at GET \(/i)
+    assert.deepEqual(prisma.getPrismaCalls(), ['category.findMany', 'link.findMany'])
+  } finally {
+    prisma.uninstallPrismaStore()
+  }
+})
+
+test('an empty database exports a valid empty bookmark file', async () => {
+  process.env.AUTH_SECRET = TEST_SECRET
+  const prisma = await import('./fixtures/prisma')
+  prisma.installPrismaStore({ categories: [], links: [] })
+
+  try {
+    const exportRoute = await import('../src/app/api/links/export/route')
+    const response = await exportRoute.GET(
+      request('/api/links/export', { token: createSessionToken('admin') })
+    )
+    const html = await response.text()
+
+    assert.equal(response.status, 200)
+    assert.match(html, /^<!DOCTYPE NETSCAPE-Bookmark-file-1>/)
+    assert.match(html, /<DL><p>\n<\/DL><p>\n$/)
+  } finally {
+    prisma.uninstallPrismaStore()
+  }
+})
+
+test('bookmark export failures do not disclose paths, secrets, or stacks', async () => {
+  process.env.AUTH_SECRET = TEST_SECRET
+  const prisma = await import('./fixtures/prisma')
+  prisma.installPrismaStore({ categories: [], links: [] })
+  prisma.setPrismaStoreHooks({
+    beforeOperation(operation) {
+      if (operation === 'category.findMany') {
+        throw new Error(`S:\\private\\onenav.db DATABASE_URL AUTH_SECRET ${TEST_SECRET}`)
+      }
+    },
+  })
+
+  try {
+    const exportRoute = await import('../src/app/api/links/export/route')
+    const response = await exportRoute.GET(
+      request('/api/links/export', { token: createSessionToken('admin') })
+    )
+    const body = await response.text()
+
+    assert.equal(response.status, 500)
+    assert.equal(response.headers.get('cache-control'), 'private, no-store')
+    assert.doesNotMatch(body, /onenav\.db|DATABASE_URL|AUTH_SECRET|endpoint-auth-test-secret|Error:|\\private/i)
+  } finally {
+    prisma.uninstallPrismaStore()
   }
 })
 
@@ -249,6 +346,40 @@ test('login, logout, click, and the public homepage remain public', async () => 
     const response = proxyModule.default(request(path))
     assert.equal(response.status, 200, path)
     assert.equal(response.headers.get('x-middleware-next'), '1', path)
+  }
+})
+
+test('the anonymous homepage never serializes private categories or links', async () => {
+  process.env.AUTH_SECRET = TEST_SECRET
+  const [home, headers, prisma] = await Promise.all([
+    import('../src/app/page'),
+    import('./fixtures/headers'),
+    import('./fixtures/prisma'),
+  ])
+  headers.setSessionToken(undefined)
+  prisma.installPrismaStore({
+    categories: [
+      { id: 1, name: 'Public root', parentId: null, property: 0, fontIcon: '' },
+      { id: 2, name: 'Private root', parentId: null, property: 1, fontIcon: '' },
+    ],
+    links: [
+      { id: 10, categoryId: 1, title: 'Public link', url: 'https://public.example', description: '', property: 0 },
+      { id: 11, categoryId: 1, title: 'Private link', url: 'https://private.example', description: '', property: 1 },
+      { id: 12, categoryId: 2, title: 'Hidden category link', url: 'https://hidden.example', description: '', property: 0 },
+    ],
+  })
+
+  try {
+    const rendered = await home.default()
+    const homepageProps = (rendered as unknown as {
+      props: { categories: Array<{ id: number; links: Array<{ id: number }> }> }
+    }).props
+
+    assert.deepEqual(homepageProps.categories.map((category) => category.id), [1])
+    assert.deepEqual(homepageProps.categories[0].links.map((link) => link.id), [10])
+    assert.doesNotMatch(JSON.stringify(homepageProps.categories), /Private link|private\.example|Private root/)
+  } finally {
+    prisma.uninstallPrismaStore()
   }
 })
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { AppToolbar } from './AppToolbar'
 import { AppSidebar } from './AppSidebar'
@@ -8,7 +8,6 @@ import { SearchBar } from './SearchBar'
 import { CategorySection } from './CategorySection'
 import { PageBackground } from './PageBackground'
 import { FabButtons } from './FabButtons'
-import { LinkContextMenu } from './LinkContextMenu'
 import { LinkContextData } from './LinkCard'
 import { DynamicIcon } from '@/components/shared/DynamicIcon'
 import { getIconForCategory } from '@/lib/icons'
@@ -16,30 +15,17 @@ import { Lock } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-
-interface CategoryData {
-  id: number
-  name: string
-  property: number
-  fontIcon: string | null
-  children: { id: number; name: string; fontIcon: string | null; children: never[] }[]
-  links: { id: number; title: string; url: string; description: string; property: number }[]
-  childSections: {
-    id: number
-    name: string
-    property: number
-    fontIcon: string | null
-    links: { id: number; title: string; url: string; description: string; property: number }[]
-  }[]
-}
+import { filterPublicCategories, type PublicCategoryData } from '@/lib/public-homepage-data'
 
 interface PublicHomepageProps {
-  categories: CategoryData[]
+  categories: PublicCategoryData[]
   categoryOptions: { id: number; name: string }[]
   siteTitle: string
   siteSubtitle: string
@@ -52,8 +38,10 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true)
   const [showBackToTop, setShowBackToTop] = useState(false)
-  const [contextLink, setContextLink] = useState<LinkContextData | null>(null)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState<LinkContextData | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const deletingRef = useRef(false)
 
   useEffect(() => {
     const onScroll = () => setShowBackToTop(window.scrollY > 400)
@@ -78,36 +66,54 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
     }
   }, [mobileSidebarOpen])
 
-  const handleDelete = useCallback(async (data: LinkContextData) => {
-    const res = await fetch(`/api/links/${data.id}`, { method: 'DELETE' })
-    const json = await res.json()
-    if (json.code === 0) {
+  const handleDeleteRequest = useCallback((data: LinkContextData) => {
+    setPendingDelete(data)
+  }, [])
+
+  const handleDeleteDialogOpenChange = useCallback((open: boolean) => {
+    if (!open && !deletingRef.current) {
+      setPendingDelete(null)
+    }
+  }, [])
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!pendingDelete || deletingRef.current) return
+
+    deletingRef.current = true
+    setDeleting(true)
+
+    try {
+      const response = await fetch(`/api/links/${pendingDelete.id}`, { method: 'DELETE' })
+      const result: unknown = await response.json().catch(() => null)
+      const succeeded =
+        response.ok &&
+        typeof result === 'object' &&
+        result !== null &&
+        'code' in result &&
+        result.code === 0
+
+      if (!succeeded) {
+        toast.error('删除失败，请稍后重试')
+        return
+      }
+
+      setPendingDelete(null)
       toast.success('链接已删除')
       router.refresh()
-    } else {
-      toast.error(json.err_msg || '删除失败')
+    } catch {
+      toast.error('删除失败，请稍后重试')
+    } finally {
+      deletingRef.current = false
+      setDeleting(false)
     }
-  }, [router])
+  }, [pendingDelete, router])
+
+  const handleOpen = useCallback((data: LinkContextData) => {
+    window.open(data.url, '_blank', 'noopener,noreferrer')
+  }, [])
 
   const filteredCategories = useMemo(() => {
-    if (!search.trim()) return categories
-    const q = search.toLowerCase()
-    return categories
-      .map((cat) => {
-        const filteredLinks = cat.links.filter(
-          (l) => l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q)
-        )
-        const filteredChildren = cat.childSections
-          .map((child) => ({
-            ...child,
-            links: child.links.filter(
-              (l) => l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q)
-            ),
-          }))
-          .filter((child) => child.links.length > 0)
-        return { ...cat, links: filteredLinks, childSections: filteredChildren }
-      })
-      .filter((cat) => cat.links.length > 0 || cat.childSections.length > 0)
+    return filterPublicCategories(categories, search)
   }, [categories, search])
 
   const handleNavigate = useCallback((id: number) => {
@@ -197,10 +203,9 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
                           links: cat.links,
                         }}
                         showTitle={!flattenSingleChild && hasChildren}
-                        onLinkContextMenu={(e, data) => {
-                          e.preventDefault()
-                          setContextLink(data)
-                        }}
+                        isLoggedIn={isLoggedIn}
+                        onLinkOpen={handleOpen}
+                        onLinkDelete={handleDeleteRequest}
                       />
                     )}
 
@@ -217,10 +222,9 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
                         }}
                         showTitle
                         isChild
-                        onLinkContextMenu={(e, data) => {
-                          e.preventDefault()
-                          setContextLink(data)
-                        }}
+                        isLoggedIn={isLoggedIn}
+                        onLinkOpen={handleOpen}
+                        onLinkDelete={handleDeleteRequest}
                       />
                     ))}
                   </div>
@@ -237,6 +241,35 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
         showBackToTop={showBackToTop}
       />
 
+      <Dialog open={pendingDelete !== null} onOpenChange={handleDeleteDialogOpenChange}>
+        <DialogContent role="alertdialog" className="rounded-2xl" showCloseButton={!deleting}>
+          <DialogHeader>
+            <DialogTitle className="text-xl font-extrabold text-ink-dark">确认删除链接</DialogTitle>
+            <DialogDescription>
+              确定要删除“{pendingDelete?.title}”吗？删除后不可恢复。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={deleting}
+              onClick={() => setPendingDelete(null)}
+            >
+              取消
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={deleting}
+              onClick={() => void handleConfirmDelete()}
+            >
+              {deleting ? '删除中…' : '确认删除'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <footer
         className={`w-full ml-0 my-3.5 mb-5 px-[18px] text-center text-ink-muted text-sm transition-[width,margin-left] duration-[220ms] motion-reduce:transition-none md:px-[40px] ${
           desktopSidebarOpen
@@ -250,14 +283,6 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, siteSub
         </a>
         .
       </footer>
-
-      <LinkContextMenu
-        linkData={contextLink}
-        isLoggedIn={isLoggedIn}
-        onOpen={(data) => window.open(data.url, '_blank')}
-        onEdit={(data) => router.push(`/admin/links/${data.id}`)}
-        onDelete={handleDelete}
-      />
 
       {/* Quick Add Dialog */}
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>

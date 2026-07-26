@@ -45,12 +45,26 @@ export type StoreCategory = {
   id: number
   name: string
   parentId: number | null
+  property?: number
+  weight?: number
+  description?: string
+  fontIcon?: string
+  addTime?: number
+  upTime?: number
 }
 
 export type StoreLink = {
   id: number
   categoryId: number
   title: string
+  url?: string
+  urlStandby?: string
+  description?: string
+  weight?: number
+  property?: number
+  fontIcon?: string
+  addTime?: number
+  upTime?: number
 }
 
 type StoreState = {
@@ -101,14 +115,18 @@ function matches(value: number | null, filter: ScalarFilter | undefined): boolea
   return value === filter
 }
 
-type CategoryWhere = { id?: ScalarFilter; parentId?: ScalarFilter }
-type LinkWhere = { id?: ScalarFilter; categoryId?: ScalarFilter }
+type CategoryWhere = { id?: ScalarFilter; parentId?: ScalarFilter; property?: ScalarFilter }
+type LinkWhere = { id?: ScalarFilter; categoryId?: ScalarFilter; property?: ScalarFilter }
 
 const categoryMatches = (row: StoreCategory, where: CategoryWhere = {}) =>
-  matches(row.id, where.id) && matches(row.parentId, where.parentId)
+  matches(row.id, where.id) &&
+  matches(row.parentId, where.parentId) &&
+  matches(row.property ?? 0, where.property)
 
 const linkMatches = (row: StoreLink, where: LinkWhere = {}) =>
-  matches(row.id, where.id) && matches(row.categoryId, where.categoryId)
+  matches(row.id, where.id) &&
+  matches(row.categoryId, where.categoryId) &&
+  matches(row.property ?? 0, where.property)
 
 /** Shaped like Prisma's PrismaClientKnownRequestError: a stable string `code`. */
 export class StoreRecordNotFound extends Error {
