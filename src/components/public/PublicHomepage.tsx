@@ -190,7 +190,7 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
                     {cat.property === 1 && <Lock className="w-3.5 h-3.5 text-[#5fb878]" />}
                   </div>
 
-                  <div className={`flex flex-col gap-[26px] ml-3.5 pl-7 border-l border-[rgba(111,96,255,0.16)] ${flattenSingleChild ? 'ml-0 pl-0 border-l-0 gap-0' : ''}`}>
+                  <div className={`flex flex-col gap-[26px] ml-3.5 pl-7 border-l border-line-tree ${flattenSingleChild ? 'ml-0 pl-0 border-l-0 gap-0' : ''}`}>
                     {/* Own links */}
                     {hasOwnLinks && (
                       <CategorySection
@@ -340,21 +340,21 @@ function QuickAddForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <input
-        className="w-full h-12 rounded-xl border border-[rgba(145,152,230,0.2)] bg-white px-4 text-ink placeholder:text-ink-muted outline-none focus:border-purple-primary"
+        className="w-full h-12 rounded-xl border border-line-input bg-surface-input px-4 text-ink placeholder:text-ink-muted outline-none focus:border-purple-primary"
         placeholder="链接标题"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
       />
       <input
-        className="w-full h-12 rounded-xl border border-[rgba(145,152,230,0.2)] bg-white px-4 text-ink placeholder:text-ink-muted outline-none focus:border-purple-primary"
+        className="w-full h-12 rounded-xl border border-line-input bg-surface-input px-4 text-ink placeholder:text-ink-muted outline-none focus:border-purple-primary"
         placeholder="链接地址 https://..."
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         required
       />
       <select
-        className="w-full h-12 rounded-xl border border-[rgba(145,152,230,0.2)] bg-white px-4 text-ink outline-none focus:border-purple-primary"
+        className="w-full h-12 rounded-xl border border-line-input bg-surface-input px-4 text-ink outline-none focus:border-purple-primary"
         value={categoryId}
         onChange={(e) => setCategoryId(e.target.value)}
         required

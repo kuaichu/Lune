@@ -52,7 +52,7 @@ export function CategorySection({
         >
           <div className="cat-title-bar" />
           <DynamicIcon name={icon} className="w-5 h-5 text-purple-primary" />
-          <span className="text-[17px] font-bold text-[#2d3260]">{name}</span>
+          <span className="text-[17px] font-bold text-ink-title">{name}</span>
           {isPrivate && <Lock className="w-3.5 h-3.5 text-[#5fb878]" />}
         </div>
       )}

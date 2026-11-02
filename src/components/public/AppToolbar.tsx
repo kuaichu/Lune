@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Menu, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
 interface AppToolbarProps {
   siteTitle: string
@@ -71,6 +72,8 @@ export function AppToolbar({
         </Link>
 
         <div className="flex-1" />
+
+        <ThemeToggle />
 
         <Link href={isLoggedIn ? '/admin' : '/login'} title={isLoggedIn ? '后台管理' : '登录'}>
           <Button

@@ -43,7 +43,7 @@ export function AppSidebar({
 
       <aside
         id="app-sidebar"
-        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[translate,opacity,visibility] duration-[220ms] ease-out motion-reduce:transition-none max-md:w-[56vw] max-md:min-w-[210px] max-md:max-w-[280px] max-md:bg-[#fbfbff] max-md:shadow-[0_14px_34px_rgba(64,60,150,0.10)] ${
+        className={`fixed top-[72px] left-0 bottom-0 w-[248px] app-drawer z-30 transition-[translate,opacity,visibility] duration-[220ms] ease-out motion-reduce:transition-none max-md:w-[56vw] max-md:min-w-[210px] max-md:max-w-[280px] max-md:bg-surface-drawer max-md:shadow-[var(--shadow-drawer)] ${
           isMobileOpen ? 'max-md:translate-x-0 max-md:opacity-100 max-md:visible' : 'max-md:-translate-x-full max-md:opacity-0 max-md:invisible'
         } ${
           isDesktopOpen ? 'md:translate-x-0 md:opacity-100 md:visible' : 'md:-translate-x-full md:opacity-0 md:invisible'
@@ -67,10 +67,10 @@ export function AppSidebar({
                 <a
                   href={isLoggedIn ? '/admin' : '/login'}
                   onClick={onMobileClose}
-                  className="flex items-center gap-3.5 min-h-[50px] rounded-[14px] pl-[20px] pr-2 no-underline hover:bg-[rgba(111,96,255,0.07)] hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all"
+                  className="flex items-center gap-3.5 min-h-[50px] rounded-[14px] pl-[20px] pr-2 no-underline hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all"
                 >
                   <DynamicIcon name={isLoggedIn ? 'LayoutDashboard' : 'LogIn'} className="w-[18px] h-[18px] text-purple-primary" />
-                  <span className="text-[14.5px] font-bold text-[#444b78]">{isLoggedIn ? '后台管理' : '登录'}</span>
+                  <span className="text-[14.5px] font-bold text-ink-nav">{isLoggedIn ? '后台管理' : '登录'}</span>
                 </a>
               </li>
             </ul>
@@ -102,10 +102,10 @@ function SidebarCategoryItem({
           onClick={(e) => { e.preventDefault(); onNavigate(category.id) }}
           className="block w-full no-underline drawer-anchor"
         >
-          <div className="flex items-center min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-[rgba(111,96,255,0.07)] hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] hover:translate-x-px transition-all motion-reduce:transition-none motion-reduce:hover:translate-x-0">
+          <div className="flex items-center min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] hover:translate-x-px transition-all motion-reduce:transition-none motion-reduce:hover:translate-x-0">
             <div className="flex items-center min-w-0">
               <DynamicIcon name={icon} className="w-[18px] h-[18px] mr-3.5 shrink-0" style={{ color: iconColor }} />
-              <span className="text-[14.5px] font-bold text-[#444b78]">{category.name}</span>
+              <span className="text-[14.5px] font-bold text-ink-nav">{category.name}</span>
             </div>
           </div>
         </a>
@@ -116,11 +116,11 @@ function SidebarCategoryItem({
   return (
     <li>
       <Collapsible>
-        <CollapsibleTrigger className="flex items-center w-full min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-[rgba(111,96,255,0.07)] hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all group">
+        <CollapsibleTrigger className="flex items-center w-full min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all group">
           <DynamicIcon name={icon} className="w-[18px] h-[18px] mr-3.5 shrink-0" style={{ color: iconColor }} />
-          <span className="flex-1 text-left text-[14.5px] font-bold text-[#444b78]">{category.name}</span>
+          <span className="flex-1 text-left text-[14.5px] font-bold text-ink-nav">{category.name}</span>
           <span className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-data-[panel-open]:rotate-180">
-            <ChevronDown className="w-4 h-4 text-[#8a91aa]" />
+            <ChevronDown className="w-4 h-4 text-ink-chevron" />
           </span>
         </CollapsibleTrigger>
         <CollapsibleContent>
@@ -132,8 +132,8 @@ function SidebarCategoryItem({
                   onClick={(e) => { e.preventDefault(); onNavigate(sub.id) }}
                   className="block w-full no-underline drawer-subanchor"
                 >
-                  <div className="flex items-center min-h-[40px] rounded-[13px] pl-[44px] pr-2 hover:bg-[rgba(111,96,255,0.07)] hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all">
-                    <DynamicIcon name="FolderOpen" className="w-[15px] h-[15px] mr-2 text-[#8a8ee6]" />
+                  <div className="flex items-center min-h-[40px] rounded-[13px] pl-[44px] pr-2 hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all">
+                    <DynamicIcon name="FolderOpen" className="w-[15px] h-[15px] mr-2 text-ink-subicon" />
                     <span className="text-[13px] text-ink-soft">{sub.name}</span>
                   </div>
                 </a>

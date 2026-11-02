@@ -14,7 +14,7 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
         <Search className="text-purple-primary w-7 h-7 shrink-0" />
         <input
           type="search"
-          className="flex-1 border-none bg-transparent text-[15px] text-[#434a77] placeholder:text-[#9b9fc4] outline-none"
+          className="flex-1 border-none bg-transparent text-[15px] text-ink-search placeholder:text-ink-placeholder outline-none"
           placeholder="输入书签关键词进行搜索"
           value={value}
           onChange={(e) => onChange(e.target.value)}

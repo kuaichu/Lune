@@ -37,7 +37,7 @@ export function LinkCard({ title, url, property }: LinkCardProps) {
             unoptimized
           />
         )}
-        <span className="text-[15px] font-semibold text-[#3d446f] whitespace-nowrap overflow-hidden text-ellipsis flex-1">
+        <span className="text-[15px] font-semibold text-ink-body whitespace-nowrap overflow-hidden text-ellipsis flex-1">
           {title}
         </span>
         {isPrivate && (
