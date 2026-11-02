@@ -115,6 +115,7 @@
   --shadow-drawer: 0 14px 34px rgba(64, 60, 150, 0.10);
   --toolbar-from: rgba(108, 99, 226, 0.96);
   --toolbar-to: rgba(87, 88, 210, 0.96);
+  --body-base: #f7f6ff;
   --body-bg:
     radial-gradient(circle at left 18%, rgba(210, 219, 255, 0.30), transparent 22%),
     radial-gradient(circle at right 18%, rgba(255, 222, 241, 0.22), transparent 18%),
@@ -167,6 +168,10 @@ body {
   min-height: 100vh;
   color: var(--text);
   background: var(--body-bg);
+  /* The gradient is viewport-sized; without this it tiles every 100vh and shows seams while scrolling. */
+  background-color: var(--body-base);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
@@ -398,6 +403,7 @@ a, a:hover, a:focus, a:visited {
   --shadow-drawer: 0 14px 34px rgba(4, 4, 20, 0.5);
   --toolbar-from: rgba(58, 52, 150, 0.94);
   --toolbar-to: rgba(42, 44, 122, 0.94);
+  --body-base: #12132b;
   --body-bg:
     radial-gradient(circle at left 18%, rgba(84, 78, 190, 0.20), transparent 24%),
     radial-gradient(circle at right 18%, rgba(150, 70, 150, 0.12), transparent 20%),
