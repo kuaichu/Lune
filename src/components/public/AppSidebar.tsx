@@ -1,10 +1,12 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { DynamicIcon } from '@/components/shared/DynamicIcon'
 import { getIconForCategory, ICON_COLORS } from '@/lib/icons'
+import { cn } from '@/lib/utils'
 
 interface SidebarCategory {
   id: number
@@ -20,6 +22,8 @@ interface AppSidebarProps {
   onMobileClose: () => void
   isLoggedIn: boolean
   onNavigate: (id: number) => void
+  activeParentId: number | null
+  activeChildId: number | null
 }
 
 export function AppSidebar({
@@ -29,7 +33,30 @@ export function AppSidebar({
   onMobileClose,
   isLoggedIn,
   onNavigate,
+  activeParentId,
+  activeChildId,
 }: AppSidebarProps) {
+  // Keep the highlighted entry visible when the page scroll moves it out of the sidebar's own scroll range.
+  useEffect(() => {
+    const activeId = activeChildId ?? activeParentId
+    if (activeId === null) return
+
+    const item = document.querySelector<HTMLElement>(`#app-sidebar [data-nav-id="${activeId}"]`)
+    const viewport = item?.closest<HTMLElement>('[data-slot="scroll-area-viewport"]')
+    if (!item || !viewport) return
+
+    const itemRect = item.getBoundingClientRect()
+    const viewportRect = viewport.getBoundingClientRect()
+    const margin = 24
+    let delta = 0
+    if (itemRect.top < viewportRect.top + margin) delta = itemRect.top - viewportRect.top - margin
+    else if (itemRect.bottom > viewportRect.bottom - margin) delta = itemRect.bottom - viewportRect.bottom + margin
+    if (delta === 0) return
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    viewport.scrollTo({ top: viewport.scrollTop + delta, behavior: reduceMotion ? 'auto' : 'smooth' })
+  }, [activeParentId, activeChildId])
+
   return (
     <>
       {/* Overlay stays mounted so both entrance and exit can fade. */}
@@ -57,6 +84,8 @@ export function AppSidebar({
                   key={cat.id}
                   category={cat}
                   colorIndex={idx}
+                  isActive={cat.id === activeParentId}
+                  activeChildId={activeChildId}
                   onNavigate={(id) => {
                     onNavigate(id)
                     onMobileClose()
@@ -84,28 +113,57 @@ export function AppSidebar({
 function SidebarCategoryItem({
   category,
   colorIndex,
+  isActive,
+  activeChildId,
   onNavigate,
 }: {
   category: SidebarCategory
   colorIndex: number
+  isActive: boolean
+  activeChildId: number | null
   onNavigate: (id: number) => void
 }) {
   const hasChildren = category.children && category.children.length > 0
   const icon = getIconForCategory(category.fontIcon, category.name)
   const iconColor = ICON_COLORS[colorIndex % ICON_COLORS.length]
+  const [open, setOpen] = useState(false)
+  const [wasActive, setWasActive] = useState(false)
+
+  // Open a group when scrolling reaches it; the user can still close it afterwards.
+  if (isActive !== wasActive) {
+    setWasActive(isActive)
+    if (isActive) setOpen(true)
+  }
+
+  const rowClass = cn(
+    'relative flex items-center min-h-[50px] rounded-[14px] pl-[12px] pr-2 transition-all motion-reduce:transition-none',
+    isActive
+      ? 'bg-hover-tint'
+      : 'hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)]'
+  )
+  const textClass = cn('text-[14.5px] font-bold', isActive ? 'text-ink-dark' : 'text-ink-nav')
+  const marker = isActive && (
+    <span
+      aria-hidden="true"
+      className="absolute left-0 top-3 bottom-3 w-[3px] rounded-full"
+      style={{ backgroundColor: iconColor }}
+    />
+  )
 
   if (!hasChildren) {
     return (
-      <li className="drawer-collapse">
+      <li className="drawer-collapse" data-nav-id={category.id}>
         <a
           href={`#category-${category.id}`}
           onClick={(e) => { e.preventDefault(); onNavigate(category.id) }}
+          aria-current={isActive ? 'location' : undefined}
           className="block w-full no-underline drawer-anchor"
         >
-          <div className="flex items-center min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] hover:translate-x-px transition-all motion-reduce:transition-none motion-reduce:hover:translate-x-0">
+          <div className={cn(rowClass, !isActive && 'hover:translate-x-px motion-reduce:hover:translate-x-0')}>
+            {marker}
             <div className="flex items-center min-w-0">
               <DynamicIcon name={icon} className="w-[18px] h-[18px] mr-3.5 shrink-0" style={{ color: iconColor }} />
-              <span className="text-[14.5px] font-bold text-ink-nav">{category.name}</span>
+              <span className={textClass}>{category.name}</span>
             </div>
           </div>
         </a>
@@ -114,31 +172,49 @@ function SidebarCategoryItem({
   }
 
   return (
-    <li>
-      <Collapsible>
-        <CollapsibleTrigger className="flex items-center w-full min-h-[50px] rounded-[14px] pl-[12px] pr-2 hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all group">
+    <li data-nav-id={category.id}>
+      <Collapsible open={open} onOpenChange={setOpen}>
+        <CollapsibleTrigger className={cn(rowClass, 'w-full group')}>
+          {marker}
           <DynamicIcon name={icon} className="w-[18px] h-[18px] mr-3.5 shrink-0" style={{ color: iconColor }} />
-          <span className="flex-1 text-left text-[14.5px] font-bold text-ink-nav">{category.name}</span>
+          <span className={cn('flex-1 text-left', textClass)}>{category.name}</span>
           <span className="shrink-0 transition-transform duration-200 motion-reduce:transition-none group-data-[panel-open]:rotate-180">
             <ChevronDown className="w-4 h-4 text-ink-chevron" />
           </span>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <ul className="pl-0 pt-1">
-            {category.children.map((sub) => (
-              <li key={sub.id}>
-                <a
-                  href={`#category-${sub.id}`}
-                  onClick={(e) => { e.preventDefault(); onNavigate(sub.id) }}
-                  className="block w-full no-underline drawer-subanchor"
-                >
-                  <div className="flex items-center min-h-[40px] rounded-[13px] pl-[44px] pr-2 hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)] transition-all">
-                    <DynamicIcon name="FolderOpen" className="w-[15px] h-[15px] mr-2 text-ink-subicon" />
-                    <span className="text-[13px] text-ink-soft">{sub.name}</span>
-                  </div>
-                </a>
-              </li>
-            ))}
+            {category.children.map((sub) => {
+              const subActive = sub.id === activeChildId
+              return (
+                <li key={sub.id} data-nav-id={sub.id}>
+                  <a
+                    href={`#category-${sub.id}`}
+                    onClick={(e) => { e.preventDefault(); onNavigate(sub.id) }}
+                    aria-current={subActive ? 'location' : undefined}
+                    className="block w-full no-underline drawer-subanchor"
+                  >
+                    <div
+                      className={cn(
+                        'flex items-center min-h-[40px] rounded-[13px] pl-[44px] pr-2 transition-all motion-reduce:transition-none',
+                        subActive
+                          ? 'bg-hover-tint'
+                          : 'hover:bg-hover-tint hover:shadow-[0_8px_18px_rgba(65,70,140,0.045)]'
+                      )}
+                    >
+                      <DynamicIcon
+                        name="FolderOpen"
+                        className={cn('w-[15px] h-[15px] mr-2', !subActive && 'text-ink-subicon')}
+                        style={subActive ? { color: iconColor } : undefined}
+                      />
+                      <span className={cn('text-[13px]', subActive ? 'font-bold text-ink-title' : 'text-ink-soft')}>
+                        {sub.name}
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              )
+            })}
           </ul>
         </CollapsibleContent>
       </Collapsible>

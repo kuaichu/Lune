@@ -11,7 +11,7 @@ import { FabButtons } from './FabButtons'
 import { LinkContextData } from './LinkCard'
 import { DynamicIcon } from '@/components/shared/DynamicIcon'
 import { getIconForCategory, ICON_COLORS } from '@/lib/icons'
-import { Lock } from 'lucide-react'
+import { Lock, SearchX } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -115,6 +115,64 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
     return filterPublicCategories(categories, search)
   }, [categories, search])
 
+  const trimmedSearch = search.trim()
+  const resultCount = useMemo(() => {
+    const visible: readonly PublicCategoryData[] = filteredCategories
+    return visible.reduce<number>(
+      (sum, cat) =>
+        sum + cat.links.length + cat.childSections.reduce<number>((inner, child) => inner + child.links.length, 0),
+      0
+    )
+  }, [filteredCategories])
+
+  // Section the page is currently scrolled to, highlighted in the sidebar.
+  const [active, setActive] = useState<{ parentId: number | null; childId: number | null }>({
+    parentId: null,
+    childId: null,
+  })
+
+  useEffect(() => {
+    let frame = 0
+
+    const update = () => {
+      frame = 0
+      const toolbar = document.querySelector<HTMLElement>('.app-toolbar')
+      const line = (toolbar?.offsetHeight ?? 72) + 24
+      let parentId: number | null = null
+      let childId: number | null = null
+
+      for (const cat of filteredCategories) {
+        const parentEl = document.getElementById(`category-${cat.id}`)
+        if (!parentEl) continue
+        if (parentEl.getBoundingClientRect().top > line) break
+
+        parentId = cat.id
+        childId = null
+        for (const child of cat.childSections) {
+          const childEl = document.getElementById(`category-${child.id}`)
+          if (!childEl) continue
+          if (childEl.getBoundingClientRect().top > line) break
+          childId = child.id
+        }
+      }
+
+      setActive((prev) => (prev.parentId === parentId && prev.childId === childId ? prev : { parentId, childId }))
+    }
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [filteredCategories])
+
   // Same index-based palette as the sidebar, keyed by id so colors stay put while searching.
   const accentById = useMemo(
     () => new Map(categories.map((cat, index) => [cat.id, ICON_COLORS[index % ICON_COLORS.length]])),
@@ -152,6 +210,8 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
         onMobileClose={() => setMobileSidebarOpen(false)}
         isLoggedIn={isLoggedIn}
         onNavigate={handleNavigate}
+        activeParentId={active.parentId}
+        activeChildId={active.childId}
       />
 
       <div
@@ -163,8 +223,23 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
       >
         <div className="max-w-[1500px] mx-auto pb-9 px-0 max-md:px-[18px]">
           <div className="mt-0 lune-rise-enter">
-            <SearchBar value={search} onChange={setSearch} />
+            <SearchBar value={search} onChange={setSearch} resultCount={trimmedSearch ? resultCount : null} />
           </div>
+
+          {trimmedSearch && resultCount === 0 && (
+            <div className="parent-section mt-7 flex flex-col items-center rounded-[22px] px-6 py-16 text-center lune-fade-enter">
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-hover-tint text-purple-primary">
+                <SearchX className="h-7 w-7" />
+              </span>
+              <p className="mt-5 text-lg font-extrabold text-ink-dark">没有找到相关书签</p>
+              <p className="mt-2 max-w-md break-all text-sm font-medium text-ink-muted">
+                没有与“{trimmedSearch}”匹配的标题、描述或网址，换个关键词试试。
+              </p>
+              <Button type="button" variant="outline" className="mt-6 rounded-xl" onClick={() => setSearch('')}>
+                清除搜索
+              </Button>
+            </div>
+          )}
 
           <div className="pt-7">
             {filteredCategories.map((cat, index) => {

@@ -64,6 +64,7 @@ export function CategorySection({
               title={link.title}
               url={link.url}
               property={link.property}
+              description={link.description}
             />
           </LinkContextMenu>
         ))}

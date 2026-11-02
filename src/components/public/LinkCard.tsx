@@ -5,6 +5,7 @@ interface LinkCardProps {
   title: string
   url: string
   property: number
+  description?: string
 }
 
 export interface LinkContextData {
@@ -13,7 +14,7 @@ export interface LinkContextData {
   url: string
 }
 
-export function LinkCard({ title, url, property }: LinkCardProps) {
+export function LinkCard({ title, url, property, description }: LinkCardProps) {
   const isPrivate = property === 1
 
   return (
@@ -21,6 +22,7 @@ export function LinkCard({ title, url, property }: LinkCardProps) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
+      title={description?.trim() ? `${title}\n${description.trim()}` : undefined}
       className="block min-w-0 no-underline text-inherit hover:text-inherit focus:text-inherit visited:text-inherit"
     >
       <div className="link-line relative h-14 w-full px-4 flex items-center gap-3 overflow-visible">
