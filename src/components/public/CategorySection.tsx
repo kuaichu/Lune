@@ -1,8 +1,6 @@
 import { LinkCard, LinkContextData } from './LinkCard'
 import { LinkContextMenu } from './LinkContextMenu'
-import { getIconForCategory } from '@/lib/icons'
 import { Lock } from 'lucide-react'
-import { DynamicIcon } from '@/components/shared/DynamicIcon'
 
 interface CategoryData {
   id: number
@@ -23,7 +21,7 @@ interface LinkData {
 interface CategorySectionProps {
   category: CategoryData
   showTitle?: boolean
-  isChild?: boolean
+  accent: string
   isLoggedIn: boolean
   onLinkOpen?: (data: LinkContextData) => void
   onLinkDelete?: (data: LinkContextData) => void
@@ -32,28 +30,25 @@ interface CategorySectionProps {
 export function CategorySection({
   category,
   showTitle = true,
-  isChild = false,
+  accent,
   isLoggedIn,
   onLinkOpen,
   onLinkDelete,
 }: CategorySectionProps) {
-  const { id, name, property, fontIcon, links } = category
+  const { id, name, property, links } = category
   if (!links || links.length === 0) return null
 
-  const icon = getIconForCategory(fontIcon, name)
   const isPrivate = property === 1
 
   return (
-    <section className={isChild ? 'mt-7' : ''}>
+    <section>
       {showTitle && (
-        <div
-          id={isChild ? `category-${id}` : undefined}
-          className="flex items-center gap-2.5 mb-4"
-        >
-          <div className="cat-title-bar" />
-          <DynamicIcon name={icon} className="w-5 h-5 text-purple-primary" />
-          <span className="text-[17px] font-bold text-ink-title">{name}</span>
+        <div id={`category-${id}`} className="flex items-center gap-2.5 mb-3.5">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: accent }} />
+          <h3 className="text-[16px] font-bold text-ink-title">{name}</h3>
           {isPrivate && <Lock className="w-3.5 h-3.5 text-[#5fb878]" />}
+          <span className="text-xs font-semibold text-ink-muted">{links.length}</span>
+          <span className="h-px flex-1 bg-line" />
         </div>
       )}
       <div className="grid grid-cols-6 max-[1500px]:grid-cols-6 max-[1320px]:grid-cols-5 max-[1160px]:grid-cols-4 max-[960px]:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4 items-stretch">

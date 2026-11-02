@@ -20,7 +20,6 @@
   --color-ink-chevron: var(--ink-chevron);
   --color-ink-subicon: var(--ink-subicon);
   --color-line-input: var(--border-input);
-  --color-line-tree: var(--border-tree);
   --color-line: var(--line);
   --color-line-soft: rgba(145, 152, 230, 0.10);
   --color-surface-card: var(--surface-card);
@@ -108,7 +107,6 @@
   --border-card: rgba(145, 152, 230, 0.10);
   --border-card-hover: rgba(111, 96, 255, 0.22);
   --border-input: rgba(145, 152, 230, 0.2);
-  --border-tree: rgba(111, 96, 255, 0.16);
   --hover-tint: rgba(111, 96, 255, 0.07);
   --shadow-card: 0 6px 18px rgba(65, 70, 140, 0.045);
   --shadow-card-hover: 0 10px 24px rgba(65, 70, 140, 0.075);
@@ -199,21 +197,6 @@ a, a:hover, a:focus, a:visited {
   border: 1px solid var(--border-section);
   background: linear-gradient(180deg, var(--surface-section-from), var(--surface-section-to));
   box-shadow: var(--shadow-section);
-}
-
-.parent-title-mark {
-  width: 4px;
-  height: 26px;
-  border-radius: 999px;
-  background: var(--purple);
-  box-shadow: 0 8px 18px rgba(111, 96, 255, 0.24);
-}
-
-.cat-title-bar {
-  width: 4px;
-  height: 22px;
-  border-radius: 999px;
-  background: var(--purple);
 }
 
 /* Link cards */
@@ -407,7 +390,6 @@ a, a:hover, a:focus, a:visited {
   --border-card: rgba(160, 168, 255, 0.10);
   --border-card-hover: rgba(154, 140, 255, 0.40);
   --border-input: rgba(160, 168, 255, 0.22);
-  --border-tree: rgba(154, 140, 255, 0.22);
   --hover-tint: rgba(154, 140, 255, 0.12);
   --shadow-card: 0 6px 18px rgba(4, 4, 20, 0.28);
   --shadow-card-hover: 0 10px 26px rgba(4, 4, 24, 0.42);

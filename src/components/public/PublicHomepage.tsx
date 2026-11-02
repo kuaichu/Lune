@@ -10,7 +10,7 @@ import { PageBackground } from './PageBackground'
 import { FabButtons } from './FabButtons'
 import { LinkContextData } from './LinkCard'
 import { DynamicIcon } from '@/components/shared/DynamicIcon'
-import { getIconForCategory } from '@/lib/icons'
+import { getIconForCategory, ICON_COLORS } from '@/lib/icons'
 import { Lock } from 'lucide-react'
 import {
   Dialog,
@@ -115,6 +115,12 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
     return filterPublicCategories(categories, search)
   }, [categories, search])
 
+  // Same index-based palette as the sidebar, keyed by id so colors stay put while searching.
+  const accentById = useMemo(
+    () => new Map(categories.map((cat, index) => [cat.id, ICON_COLORS[index % ICON_COLORS.length]])),
+    [categories]
+  )
+
   const handleNavigate = useCallback((id: number) => {
     const el = document.getElementById(`category-${id}`)
     if (el) {
@@ -156,10 +162,6 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
         }`}
       >
         <div className="max-w-[1500px] mx-auto pb-9 px-0 max-md:px-[18px]">
-          <div className="py-3 border-b border-[rgba(145,152,230,0.16)] mb-0 hidden">
-            <span className="text-sm font-bold text-[#3f4674]">{siteTitle}</span>
-          </div>
-
           <div className="mt-0 lune-rise-enter">
             <SearchBar value={search} onChange={setSearch} />
           </div>
@@ -174,6 +176,9 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
               if (!hasOwnLinks && !hasChildren) return null
 
               const icon = getIconForCategory(cat.fontIcon, cat.name)
+              const accent = accentById.get(cat.id) ?? ICON_COLORS[0]
+              const totalLinks =
+                cat.links.length + cat.childSections.reduce((sum, child) => sum + child.links.length, 0)
 
               return (
                 <section
@@ -183,15 +188,22 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
                     index === 0 ? 'lune-fade-enter lune-delay-1' : ''
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-h-7 mb-5">
-                    <div className="parent-title-mark" />
-                    <DynamicIcon name={icon} className="w-[22px] h-[22px] text-purple-primary" />
-                    <span className="text-[21px] font-extrabold text-ink-dark">{cat.name}</span>
+                  <div className="flex items-center gap-3 min-h-9 mb-5">
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+                      style={{ color: accent, backgroundColor: `color-mix(in srgb, ${accent} 14%, transparent)` }}
+                    >
+                      <DynamicIcon name={icon} className="w-5 h-5" />
+                    </span>
+                    <h2 className="text-[21px] font-extrabold text-ink-dark">{cat.name}</h2>
                     {cat.property === 1 && <Lock className="w-3.5 h-3.5 text-[#5fb878]" />}
+                    <span className="rounded-full bg-hover-tint px-2 py-0.5 text-xs font-bold text-ink-muted">
+                      {totalLinks}
+                    </span>
                   </div>
 
-                  <div className={`flex flex-col gap-[26px] ml-3.5 pl-7 border-l border-line-tree ${flattenSingleChild ? 'ml-0 pl-0 border-l-0 gap-0' : ''}`}>
-                    {/* Own links */}
+                  <div className="flex flex-col gap-7">
+                    {/* Own links sit directly under the category header */}
                     {hasOwnLinks && (
                       <CategorySection
                         category={{
@@ -201,7 +213,8 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
                           fontIcon: cat.fontIcon,
                           links: cat.links,
                         }}
-                        showTitle={!flattenSingleChild && hasChildren}
+                        showTitle={false}
+                        accent={accent}
                         isLoggedIn={isLoggedIn}
                         onLinkOpen={handleOpen}
                         onLinkDelete={handleDeleteRequest}
@@ -219,8 +232,8 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
                           fontIcon: child.fontIcon,
                           links: child.links,
                         }}
-                        showTitle
-                        isChild
+                        showTitle={!flattenSingleChild}
+                        accent={accent}
                         isLoggedIn={isLoggedIn}
                         onLinkOpen={handleOpen}
                         onLinkDelete={handleDeleteRequest}
