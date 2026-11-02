@@ -364,11 +364,8 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
             : 'md:w-full md:ml-0'
         }`}
       >
-        &copy; {new Date().getFullYear()} Powered by{' '}
-        <a href="https://www.onenav.top/" target="_blank" rel="nofollow" className="text-purple-primary">
-          OneNav
-        </a>
-        .
+        &copy; {new Date().getFullYear()} {siteTitle} · Powered by{' '}
+        <span className="font-semibold text-purple-primary">Lune</span>
       </footer>
 
       {/* Quick Add Dialog */}
