@@ -1,6 +1,5 @@
-import Image from 'next/image'
 import { Lock } from 'lucide-react'
-import { faviconUrl } from '@/lib/icons'
+import { SiteIcon } from './SiteIcon'
 
 interface LinkCardProps {
   title: string
@@ -16,7 +15,6 @@ export interface LinkContextData {
 
 export function LinkCard({ title, url, property }: LinkCardProps) {
   const isPrivate = property === 1
-  const favicon = faviconUrl(url)
 
   return (
     <a
@@ -27,16 +25,7 @@ export function LinkCard({ title, url, property }: LinkCardProps) {
     >
       <div className="link-line relative h-14 w-full px-4 flex items-center gap-3 overflow-visible">
         {isPrivate && <div className="angle"><span /></div>}
-        {favicon && (
-          <Image
-            src={favicon}
-            alt=""
-            width={16}
-            height={16}
-            className="w-4 h-4 rounded shrink-0"
-            unoptimized
-          />
-        )}
+        <SiteIcon title={title} url={url} />
         <span className="text-[15px] font-semibold text-ink-body whitespace-nowrap overflow-hidden text-ellipsis flex-1">
           {title}
         </span>

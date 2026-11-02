@@ -71,14 +71,3 @@ export function getIconForCategory(fontIcon: string | null, name: string): strin
   }
   return 'Bookmark'
 }
-
-export function faviconUrl(url: string): string {
-  try {
-    const parsed = new URL(url)
-    const base = `${parsed.protocol}//${parsed.hostname}${parsed.port ? ':' + parsed.port : ''}`
-    const encoded = Buffer.from(base).toString('base64')
-    return `https://favicon.png.pub/v1/${encoded}`
-  } catch {
-    return ''
-  }
-}
