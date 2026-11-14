@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Save, Settings, Sparkle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -19,6 +20,7 @@ export default function SiteSettingsPage() {
     custom_footer: '',
     link_model: 'direct',
     link_num: '30',
+    sidebar_auto_expand: true,
   })
   const [loading, setLoading] = useState(false)
 
@@ -28,7 +30,12 @@ export default function SiteSettingsPage() {
       const res = await fetch('/api/settings/site')
       const data = await res.json()
       if (!cancelled && data.code === 0 && data.data) {
-        setSettings((prev) => ({ ...prev, ...data.data, link_num: String(data.data.link_num || 30) }))
+        setSettings((prev) => ({
+          ...prev,
+          ...data.data,
+          link_num: String(data.data.link_num || 30),
+          sidebar_auto_expand: data.data.sidebar_auto_expand !== false,
+        }))
       }
     }
     void load()
@@ -114,6 +121,19 @@ export default function SiteSettingsPage() {
             <Field label="站点描述">
               <Textarea value={settings.description} onChange={(e) => update('description', e.target.value)} className="min-h-28 rounded-[13px] border-[#e2dcf6]" />
             </Field>
+          </div>
+
+          <div className="mt-5 flex items-start gap-2">
+            <Checkbox
+              id="sidebar-auto-expand"
+              checked={settings.sidebar_auto_expand}
+              onCheckedChange={(c) => setSettings((prev) => ({ ...prev, sidebar_auto_expand: c === true }))}
+              className="mt-0.5"
+            />
+            <div>
+              <Label htmlFor="sidebar-auto-expand" className="font-bold text-[#293054]">滚动时自动展开侧栏分组</Label>
+              <p className="mt-1 text-sm font-semibold text-[#858caf]">首页滚动到某个分类时展开侧栏对应分组，离开后自动收起</p>
+            </div>
           </div>
 
           <Button type="submit" disabled={loading} className="mt-7 h-12 w-full rounded-[14px] bg-gradient-to-r from-[#7868ff] to-[#a24eff] font-extrabold text-white shadow-[0_14px_30px_rgba(117,94,244,0.22)]">

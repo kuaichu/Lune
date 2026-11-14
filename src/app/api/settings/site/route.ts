@@ -33,6 +33,7 @@ export async function PUT(request: NextRequest) {
     custom_footer: body.custom_footer || '',
     link_model: body.link_model || 'direct',
     link_num: body.link_num || 30,
+    sidebar_auto_expand: body.sidebar_auto_expand !== false,
   })
 
   await prisma.option.upsert({

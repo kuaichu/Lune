@@ -29,9 +29,10 @@ interface PublicHomepageProps {
   categoryOptions: { id: number; name: string }[]
   siteTitle: string
   isLoggedIn: boolean
+  sidebarAutoExpand: boolean
 }
 
-export function PublicHomepage({ categories, categoryOptions, siteTitle, isLoggedIn }: PublicHomepageProps) {
+export function PublicHomepage({ categories, categoryOptions, siteTitle, isLoggedIn, sidebarAutoExpand }: PublicHomepageProps) {
   const router = useRouter()
   const [search, setSearch] = useState('')
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
@@ -212,6 +213,7 @@ export function PublicHomepage({ categories, categoryOptions, siteTitle, isLogge
         onNavigate={handleNavigate}
         activeParentId={active.parentId}
         activeChildId={active.childId}
+        autoExpand={sidebarAutoExpand}
       />
 
       <div

@@ -21,10 +21,12 @@ export default async function HomePage() {
   ])
 
   let siteTitle = 'Lune'
+  let sidebarAutoExpand = true
   if (siteOption?.value) {
     try {
       const site = JSON.parse(siteOption.value)
       siteTitle = site.title || 'Lune'
+      sidebarAutoExpand = site.sidebar_auto_expand !== false
     } catch {
       const match = siteOption.value.match(/s:5:"title";s:\d+:"([^"]+)"/)
       if (match) siteTitle = match[1]
@@ -78,6 +80,7 @@ export default async function HomePage() {
       categoryOptions={categoryOptions}
       siteTitle={siteTitle}
       isLoggedIn={isLoggedIn}
+      sidebarAutoExpand={sidebarAutoExpand}
     />
   )
 }

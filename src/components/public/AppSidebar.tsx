@@ -24,6 +24,7 @@ interface AppSidebarProps {
   onNavigate: (id: number) => void
   activeParentId: number | null
   activeChildId: number | null
+  autoExpand: boolean
 }
 
 export function AppSidebar({
@@ -35,13 +36,14 @@ export function AppSidebar({
   onNavigate,
   activeParentId,
   activeChildId,
+  autoExpand,
 }: AppSidebarProps) {
   // Keep the highlighted entry visible when the page scroll moves it out of the sidebar's own scroll range.
   useEffect(() => {
-    const activeId = activeChildId ?? activeParentId
-    if (activeId === null) return
-
-    const item = document.querySelector<HTMLElement>(`#app-sidebar [data-nav-id="${activeId}"]`)
+    const find = (id: number | null) =>
+      id === null ? null : document.querySelector<HTMLElement>(`#app-sidebar [data-nav-id="${id}"]`)
+    // A collapsed group has no child rows in the DOM, so fall back to the group row itself.
+    const item = find(activeChildId) ?? find(activeParentId)
     const viewport = item?.closest<HTMLElement>('[data-slot="scroll-area-viewport"]')
     if (!item || !viewport) return
 
@@ -86,6 +88,7 @@ export function AppSidebar({
                   colorIndex={idx}
                   isActive={cat.id === activeParentId}
                   activeChildId={activeChildId}
+                  autoExpand={autoExpand}
                   onNavigate={(id) => {
                     onNavigate(id)
                     onMobileClose()
@@ -115,12 +118,14 @@ function SidebarCategoryItem({
   colorIndex,
   isActive,
   activeChildId,
+  autoExpand,
   onNavigate,
 }: {
   category: SidebarCategory
   colorIndex: number
   isActive: boolean
   activeChildId: number | null
+  autoExpand: boolean
   onNavigate: (id: number) => void
 }) {
   const hasChildren = category.children && category.children.length > 0
@@ -128,11 +133,24 @@ function SidebarCategoryItem({
   const iconColor = ICON_COLORS[colorIndex % ICON_COLORS.length]
   const [open, setOpen] = useState(false)
   const [wasActive, setWasActive] = useState(false)
+  // True only while the group is open because scrolling reached it, not because the user opened it.
+  const [autoOpened, setAutoOpened] = useState(false)
 
-  // Open a group when scrolling reaches it; the user can still close it afterwards.
+  // Scrolling into a group opens it and scrolling away closes it again, unless the user toggled it meanwhile.
   if (isActive !== wasActive) {
     setWasActive(isActive)
-    if (isActive) setOpen(true)
+    if (isActive && !open && autoExpand) {
+      setOpen(true)
+      setAutoOpened(true)
+    } else if (!isActive && autoOpened) {
+      setOpen(false)
+      setAutoOpened(false)
+    }
+  }
+
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next)
+    setAutoOpened(false)
   }
 
   const rowClass = cn(
@@ -173,7 +191,7 @@ function SidebarCategoryItem({
 
   return (
     <li data-nav-id={category.id}>
-      <Collapsible open={open} onOpenChange={setOpen}>
+      <Collapsible open={open} onOpenChange={handleOpenChange}>
         <CollapsibleTrigger className={cn(rowClass, 'w-full group')}>
           {marker}
           <DynamicIcon name={icon} className="w-[18px] h-[18px] mr-3.5 shrink-0" style={{ color: iconColor }} />
