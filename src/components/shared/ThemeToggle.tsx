@@ -4,7 +4,10 @@ import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 
-export function ThemeToggle() {
+const DEFAULT_CLASS =
+  'w-[42px] h-[42px] rounded-full bg-transparent hover:bg-white/15 hover:shadow-[0_8px_18px_rgba(35,30,130,0.16)] text-white'
+
+export function ThemeToggle({ className = DEFAULT_CLASS }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme()
 
   function toggle() {
@@ -31,7 +34,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      className="w-[42px] h-[42px] rounded-full bg-transparent hover:bg-white/15 hover:shadow-[0_8px_18px_rgba(35,30,130,0.16)] text-white"
+      className={className}
       onClick={toggle}
       aria-label="切换深色模式"
       title="切换深色模式"

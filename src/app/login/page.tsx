@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { ThemeToggle } from '@/components/shared/ThemeToggle'
 import {
   ArrowLeft,
   Bookmark,
@@ -70,14 +71,18 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f8f5ff] text-[#17143f]">
+    <main className="min-h-screen overflow-hidden bg-admin-tint-soft text-admin-ink-strong">
       <Link
         href="/"
-        className="fixed left-4 top-4 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-[#ded7f7] bg-white/80 px-4 text-sm font-extrabold text-[#6254b6] shadow-[0_10px_30px_rgba(90,72,150,0.10)] backdrop-blur-xl transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-x-0.5 hover:bg-white hover:shadow-[0_14px_34px_rgba(90,72,150,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7967ef]/55 focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-x-0 lg:left-7 lg:top-7 lg:border-white/20 lg:bg-white/10 lg:text-white lg:shadow-[0_12px_34px_rgba(4,2,22,0.18)] lg:hover:bg-white/15 lg:focus-visible:ring-white/70 lg:focus-visible:ring-offset-[#19133f]"
+        className="fixed left-4 top-4 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-admin-line bg-admin-surface/80 px-4 text-sm font-extrabold text-admin-violet shadow-[0_10px_30px_rgba(90,72,150,0.10)] backdrop-blur-xl transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-x-0.5 hover:bg-admin-surface hover:shadow-[0_14px_34px_rgba(90,72,150,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-admin-accent/55 focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-x-0 lg:left-7 lg:top-7 lg:border-white/20 lg:bg-white/10 lg:text-white lg:shadow-[0_12px_34px_rgba(4,2,22,0.18)] lg:hover:bg-white/15 lg:focus-visible:ring-white/70 lg:focus-visible:ring-offset-[#19133f]"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         <span>返回主页</span>
       </Link>
+
+      <div className="fixed right-4 top-4 z-50 lg:right-7 lg:top-7">
+        <ThemeToggle className="h-11 w-11 rounded-full border border-admin-line bg-admin-surface/80 text-admin-violet shadow-[0_10px_30px_rgba(90,72,150,0.10)] backdrop-blur-xl hover:bg-admin-surface hover:text-admin-accent" />
+      </div>
 
       <div className="flex min-h-screen">
         <section className="relative hidden min-h-screen w-[45%] overflow-hidden bg-[#110b35] lg:block">
@@ -207,7 +212,7 @@ export default function LoginPage() {
           </div>
 
           <div className="absolute -right-[109px] top-[-8%] h-[116%] w-[222px] rounded-[50%] border-l border-[#a78bfa]/25 shadow-[-18px_0_44px_rgba(167,139,250,0.25)] blur-[2px]" />
-          <div className="absolute -right-[108px] top-[-8%] h-[116%] w-[216px] rounded-[50%] bg-[#f8f5ff] shadow-[-34px_0_76px_rgba(196,181,253,0.44)]" />
+          <div className="absolute -right-[108px] top-[-8%] h-[116%] w-[216px] rounded-[50%] bg-admin-tint-soft shadow-[-34px_0_76px_rgba(196,181,253,0.44)]" />
 
           <div className="absolute bottom-12 left-12 flex items-center gap-3 text-[13px] font-semibold uppercase tracking-[0.24em] text-[#cbc0ff]/78">
             <Sparkle className="h-4 w-4" strokeWidth={1.7} />
@@ -216,51 +221,51 @@ export default function LoginPage() {
         </section>
 
         <section className="relative flex min-h-screen flex-1 items-center justify-center px-6 py-12 sm:px-10 lg:items-start lg:px-14 lg:pt-[15vh]">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_36%_22%,rgba(209,196,255,0.32),transparent_36%),radial-gradient(ellipse_at_78%_76%,rgba(137,104,255,0.12),transparent_34%),linear-gradient(120deg,#fbf9ff_0%,#f7f3ff_52%,#fdfcff_100%)]" />
-          <div className="absolute inset-y-0 left-0 hidden w-36 bg-gradient-to-r from-[#d9cdfb]/50 to-transparent blur-xl lg:block" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_36%_22%,rgba(209,196,255,0.32),transparent_36%),radial-gradient(ellipse_at_78%_76%,rgba(137,104,255,0.12),transparent_34%),var(--login-panel-base)]" />
+          <div className="absolute inset-y-0 left-0 hidden w-36 bg-gradient-to-r from-admin-line-strong/50 to-transparent blur-xl lg:block" />
 
           <div className="relative z-10 w-full max-w-[438px] lune-rise-enter">
-            <div className="rounded-[26px] border border-white/70 bg-white/68 px-7 pb-8 pt-9 shadow-[0_24px_70px_rgba(93,76,160,0.12),inset_0_1px_0_rgba(255,255,255,0.88)] backdrop-blur-2xl sm:px-9 sm:pb-9 sm:pt-10">
+            <div className="rounded-[26px] border border-admin-glass/70 bg-admin-surface/68 px-7 pb-8 pt-9 shadow-[0_24px_70px_rgba(93,76,160,0.12),inset_0_1px_0_var(--admin-highlight)] backdrop-blur-2xl sm:px-9 sm:pb-9 sm:pt-10">
               <div className="mb-7 flex justify-center">
                 <LuneMark />
               </div>
 
               <div className="mb-8 text-center">
-                <h1 className="text-[28px] font-extrabold leading-tight tracking-normal text-[#191746]">
+                <h1 className="text-[28px] font-extrabold leading-tight tracking-normal text-admin-ink-strong">
                   欢迎回来
                 </h1>
-                <p className="mt-3 text-[15px] font-medium text-[#8b84ba]">
+                <p className="mt-3 text-[15px] font-medium text-admin-violet">
                   进入你的 Lune 书签管理空间
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
-                  <User className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#8d82c8]" strokeWidth={1.9} />
+                  <User className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-admin-violet" strokeWidth={1.9} />
                   <Input
                     placeholder="用户名"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="h-[54px] rounded-[15px] border-[#e3def4] bg-white/72 pl-14 pr-5 text-[15px] font-medium text-[#201d4f] placeholder:text-[#9f98c9] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-200 hover:border-[#d4cdf0] hover:bg-white/88 focus-visible:border-[#8a74ff] focus-visible:bg-white focus-visible:ring-0 focus-visible:shadow-[0_0_0_4px_rgba(126,101,255,0.12)]"
+                    className="h-[54px] rounded-[15px] border-admin-line bg-admin-surface/72 pl-14 pr-5 text-[15px] font-medium text-admin-ink-strong placeholder:text-admin-violet shadow-[inset_0_1px_0_var(--admin-highlight)] transition-all duration-200 hover:border-admin-line-strong hover:bg-admin-surface/88 focus-visible:border-admin-accent focus-visible:bg-admin-surface focus-visible:ring-0 focus-visible:shadow-[0_0_0_4px_rgba(126,101,255,0.12)]"
                     autoComplete="username"
                     required
                   />
                 </div>
 
                 <div className="relative">
-                  <LockKeyhole className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#8d82c8]" strokeWidth={1.9} />
+                  <LockKeyhole className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-admin-violet" strokeWidth={1.9} />
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="密码"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-[54px] rounded-[15px] border-[#e3def4] bg-white/72 pl-14 pr-14 text-[15px] font-medium text-[#201d4f] placeholder:text-[#9f98c9] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-200 hover:border-[#d4cdf0] hover:bg-white/88 focus-visible:border-[#8a74ff] focus-visible:bg-white focus-visible:ring-0 focus-visible:shadow-[0_0_0_4px_rgba(126,101,255,0.12)]"
+                    className="h-[54px] rounded-[15px] border-admin-line bg-admin-surface/72 pl-14 pr-14 text-[15px] font-medium text-admin-ink-strong placeholder:text-admin-violet shadow-[inset_0_1px_0_var(--admin-highlight)] transition-all duration-200 hover:border-admin-line-strong hover:bg-admin-surface/88 focus-visible:border-admin-accent focus-visible:bg-admin-surface focus-visible:ring-0 focus-visible:shadow-[0_0_0_4px_rgba(126,101,255,0.12)]"
                     autoComplete="current-password"
                     required
                   />
                   <button
                     type="button"
-                    className="absolute right-4 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-[#8d82c8] transition-colors hover:bg-[#f0ecff] hover:text-[#6f60ff]"
+                    className="absolute right-4 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-admin-violet transition-colors hover:bg-admin-tint hover:text-admin-accent"
                     onClick={() => setShowPassword((value) => !value)}
                     aria-label={showPassword ? '隐藏密码' : '显示密码'}
                   >
@@ -269,7 +274,7 @@ export default function LoginPage() {
                 </div>
 
                 {error && (
-                  <p className="rounded-[14px] border border-red-100 bg-red-50/70 px-4 py-3 text-center text-[13px] font-medium text-red-500 lune-fade-enter">
+                  <p className="rounded-[14px] border border-red-100 bg-red-50/70 px-4 py-3 text-center text-[13px] font-medium text-red-500 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-300 lune-fade-enter">
                     {error}
                   </p>
                 )}
@@ -288,7 +293,7 @@ export default function LoginPage() {
               </form>
             </div>
 
-            <p className="mt-7 text-center text-[13px] font-medium tracking-normal text-[#a39bc8]">
+            <p className="mt-7 text-center text-[13px] font-medium tracking-normal text-admin-violet">
               {`© ${new Date().getFullYear()} Lune — 私人数字空间`}
             </p>
           </div>
@@ -301,8 +306,14 @@ export default function LoginPage() {
 function LuneMark() {
   return (
     <div className="relative h-16 w-16">
-      <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#9a8cff] via-[#725ff3] to-[#aa54ff] shadow-[0_14px_32px_rgba(117,94,244,0.28)]" />
-      <div className="absolute left-[25px] top-[12px] h-9 w-9 rounded-full bg-white/92" />
+      {/* Masked crescent (36px cut-out centred at 35px, 22px of the 48px moon); a covering disc would show on the card's glass background. */}
+      <div
+        className="absolute inset-2 rounded-full bg-gradient-to-br from-[#9a8cff] via-[#725ff3] to-[#aa54ff]"
+        style={{
+          maskImage: 'radial-gradient(circle at 35px 22px, transparent 17.5px, #000 18px)',
+          WebkitMaskImage: 'radial-gradient(circle at 35px 22px, transparent 17.5px, #000 18px)',
+        }}
+      />
       <Sparkle className="absolute right-1 top-2 h-3.5 w-3.5 text-[#907cff]" strokeWidth={2} />
       <Sparkle className="absolute right-2 top-7 h-2.5 w-2.5 text-[#a775ff]" strokeWidth={2} />
     </div>

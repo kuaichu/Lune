@@ -32,7 +32,7 @@ export function AdminSidebar({
   return (
     <aside
       className={cn(
-        'fixed bottom-0 left-0 top-0 z-50 overflow-x-clip border-r border-[#ebe7f8] bg-white/78 shadow-[18px_0_50px_rgba(77,68,124,0.04)] backdrop-blur-2xl transition-[width] duration-300 ease-out motion-reduce:transition-none max-md:hidden',
+        'fixed bottom-0 left-0 top-0 z-50 overflow-x-clip border-r border-admin-line bg-admin-surface/78 shadow-[18px_0_50px_rgba(77,68,124,0.04)] backdrop-blur-2xl transition-[width] duration-300 ease-out motion-reduce:transition-none max-md:hidden',
         collapsed ? 'w-[88px]' : 'w-[250px]'
       )}
     >
@@ -43,7 +43,7 @@ export function AdminSidebar({
           </span>
           <span
             className={cn(
-              'block overflow-hidden whitespace-nowrap text-[25px] font-extrabold tracking-normal text-[#10133e] transition-[max-width,opacity] duration-200 ease-out motion-reduce:transition-none',
+              'block overflow-hidden whitespace-nowrap text-[25px] font-extrabold tracking-normal text-admin-ink-strong transition-[max-width,opacity] duration-200 ease-out motion-reduce:transition-none',
               collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
             )}
           >
@@ -62,12 +62,12 @@ export function AdminSidebar({
                 className={cn(
                   'group grid h-[52px] grid-cols-[56px_minmax(0,1fr)] items-center rounded-[14px] text-[15px] font-extrabold transition-[background-color,color,box-shadow] motion-reduce:transition-none',
                   isActive
-                    ? 'bg-gradient-to-r from-[#f0ebff] to-[#f8f6ff] text-[#6f60ff] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]'
-                    : 'text-[#293054] hover:bg-[#f7f4ff] hover:text-[#6f60ff]'
+                    ? 'bg-gradient-to-r from-admin-tint to-admin-tint-soft text-admin-accent shadow-[inset_0_1px_0_var(--admin-highlight)]'
+                    : 'text-admin-ink hover:bg-admin-tint-soft hover:text-admin-accent'
                 )}
               >
                 <span className="flex justify-center">
-                  <item.icon className={cn('h-5 w-5', isActive ? 'text-[#735fff]' : 'text-[#8690b2] group-hover:text-[#735fff]')} />
+                  <item.icon className={cn('h-5 w-5', isActive ? 'text-admin-accent' : 'text-admin-muted group-hover:text-admin-accent')} />
                 </span>
                 <span
                   className={cn(
@@ -86,7 +86,7 @@ export function AdminSidebar({
           type="button"
           onClick={onToggleCollapsed}
           className={cn(
-            'mt-auto grid h-12 grid-cols-[56px_minmax(0,1fr)] items-center rounded-[14px] bg-[#f8f6ff] text-sm font-bold text-[#7c83a5] transition-[background-color,color] motion-reduce:transition-none hover:bg-[#f0ebff] hover:text-[#6f60ff]'
+            'mt-auto grid h-12 grid-cols-[56px_minmax(0,1fr)] items-center rounded-[14px] bg-admin-tint-soft text-sm font-bold text-admin-ink-soft transition-[background-color,color] motion-reduce:transition-none hover:bg-admin-tint hover:text-admin-accent'
           )}
           title={collapsed ? '展开菜单' : '收起菜单'}
           aria-label={collapsed ? '展开菜单' : '收起菜单'}
@@ -115,12 +115,18 @@ export function AdminSidebar({
   )
 }
 
+// Same geometry as the old cover disc: 32px circle centred at (25px, 12px) of the 28px moon.
+const CRESCENT_MASK = 'radial-gradient(circle at 25px 12px, transparent 15.5px, #000 16px)'
+
 function LuneAdminMark() {
   return (
     <div className="relative h-9 w-9">
-      <div className="absolute inset-0 rounded-full bg-[#f2edff]" />
-      <div className="absolute left-2 top-1.5 h-7 w-7 rounded-full bg-gradient-to-br from-[#8d7aff] to-[#6e5bf0]" />
-      <div className="absolute left-[17px] top-0.5 h-8 w-8 rounded-full bg-white" />
+      <div className="absolute inset-0 rounded-full bg-admin-tint" />
+      {/* Cut the crescent out with a mask instead of covering it with a background-coloured disc, which showed through on other backgrounds. */}
+      <div
+        className="absolute left-2 top-1.5 h-7 w-7 rounded-full bg-gradient-to-br from-[#8d7aff] to-[#6e5bf0]"
+        style={{ maskImage: CRESCENT_MASK, WebkitMaskImage: CRESCENT_MASK }}
+      />
     </div>
   )
 }

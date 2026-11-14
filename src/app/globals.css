@@ -26,11 +26,19 @@
   --color-surface-input: var(--surface-input);
   --color-surface-drawer: var(--surface-drawer);
   --color-hover-tint: var(--hover-tint);
-  --color-admin-bg: #f8f9ff;
-  --color-admin-purple: #7657f2;
-  --color-admin-text: #111735;
-  --color-admin-soft: #7c829f;
-  --color-admin-line: #e9ebf5;
+  --color-admin-bg: var(--admin-bg);
+  --color-admin-ink-strong: var(--admin-ink-strong);
+  --color-admin-ink: var(--admin-ink);
+  --color-admin-ink-soft: var(--admin-ink-soft);
+  --color-admin-muted: var(--admin-muted);
+  --color-admin-violet: var(--admin-violet);
+  --color-admin-accent: var(--admin-accent);
+  --color-admin-tint: var(--admin-tint);
+  --color-admin-tint-soft: var(--admin-tint-soft);
+  --color-admin-line: var(--admin-line);
+  --color-admin-line-strong: var(--admin-line-strong);
+  --color-admin-surface: var(--admin-surface);
+  --color-admin-glass: var(--admin-glass);
   --font-sans: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-heading: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -126,6 +134,24 @@
 
   --drawer-width: 248px;
   --admin-sidebar: 250px;
+
+  /* Admin and login palette. Dark values live in `.dark` below. */
+  --admin-bg: #f8f9ff;
+  --admin-ink-strong: #121642;
+  --admin-ink: #293054;
+  --admin-ink-soft: #697193;
+  --admin-muted: #858caf;
+  --admin-violet: #8d82c8;
+  --admin-accent: #735fff;
+  --admin-tint: #f0ebff;
+  --admin-tint-soft: #f8f6ff;
+  --admin-line: #e6e0f6;
+  --admin-line-strong: #dcd2ff;
+  --admin-surface: #ffffff;
+  --admin-glass: #ffffff;
+  --admin-highlight: rgba(255, 255, 255, 0.86);
+  --admin-page-base: linear-gradient(180deg, #f8f7ff 0%, #f9faff 100%);
+  --login-panel-base: linear-gradient(120deg, #fbf9ff 0%, #f7f3ff 52%, #fdfcff 100%);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -411,6 +437,24 @@ a, a:hover, a:focus, a:visited {
   --page-glow:
     radial-gradient(circle at 2% 95%, rgba(150, 80, 170, 0.14), transparent 8%),
     radial-gradient(circle at 98% 14%, rgba(110, 90, 220, 0.14), transparent 7%);
+
+  --admin-bg: #12132b;
+  --admin-ink-strong: #eceeff;
+  --admin-ink: #d3d6f5;
+  --admin-ink-soft: #a9aed4;
+  --admin-muted: #8f94bd;
+  --admin-violet: #a69de0;
+  --admin-accent: #a596ff;
+  --admin-tint: #2a2756;
+  --admin-tint-soft: #181a36;
+  --admin-line: #2c2e56;
+  --admin-line-strong: #453f84;
+  --admin-surface: #1c1e3d;
+  --admin-glass: #2c2e58;
+  --admin-highlight: rgba(255, 255, 255, 0.04);
+  --admin-page-base: linear-gradient(180deg, #111228 0%, #13152e 100%);
+  /* Matches --admin-tint-soft so the crescent edge of the login art blends into this panel. */
+  --login-panel-base: linear-gradient(120deg, #191b38 0%, #181a36 52%, #1a1b39 100%);
 
   --background: oklch(0.18 0.03 285);
   --foreground: oklch(0.94 0.015 285);
