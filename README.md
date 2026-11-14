@@ -11,8 +11,16 @@
 | 数据库 | SQLite (via better-sqlite3) |
 | ORM | Prisma 5 |
 | 样式 | Tailwind CSS v4 + shadcn/ui |
+| 主题 | next-themes（首页支持深浅色） |
 | 图标 | lucide-react |
-| 认证 | Cookie-based (bcrypt) |
+| 认证 | HMAC 签名的 Session Cookie，密码以 bcrypt 存储 |
+
+## 功能要点
+
+- **深色模式**：首页默认跟随系统，可手动切换深浅色，切换时用 View Transitions 渐变过渡（系统开启减少动效时跳过）。`/login` 和 `/admin` 固定为浅色。颜色全部定义为 `src/app/globals.css` 里的 CSS 变量。
+- **站点图标**：没有自定义图标的链接通过 `/site-icon` 由服务端代理获取 favicon；取不到时显示按域名着色的首字母头像。
+- **搜索**：首页按标题、描述和 URL 搜索。`Ctrl/⌘ + K` 或 `/` 聚焦，`Esc` 清除。
+- **书签导入导出**：后台可导入浏览器书签，也可通过 `/api/links/export` 导出为浏览器书签 HTML。
 
 ## 项目结构
 
@@ -32,18 +40,24 @@ src/
 │   ├── api/                    # API 路由
 │   │   ├── auth/               # 登录/登出
 │   │   ├── categories/         # 分类 CRUD
-│   │   ├── links/              # 链接 CRUD
+│   │   ├── links/              # 链接 CRUD、书签导出（export/）
 │   │   ├── info/               # 站点统计
 │   │   └── settings/site/      # 站点配置
-│   └── click/[id]/             # 链接点击重定向
+│   ├── click/[id]/             # 链接点击重定向
+│   └── site-icon/              # favicon 代理
 ├── components/
 │   ├── public/                 # 前台组件
 │   ├── admin/                  # 后台组件
-│   ├── shared/                 # 共享组件
+│   ├── shared/                 # 共享组件（主题等）
 │   └── ui/                     # shadcn/ui 组件
 ├── lib/                        # 工具库
 │   ├── prisma.ts               # Prisma 客户端单例
-│   ├── auth.ts                 # 认证工具
+│   ├── auth.ts                 # Session 签发与校验
+│   ├── auth-server.ts          # 登录校验、API/页面鉴权
+│   ├── category-*.ts           # 分类层级与可见性
+│   ├── public-homepage-data.ts # 首页数据与搜索
+│   ├── bookmark-export.ts      # 书签 HTML 导出
+│   ├── favicon*.ts             # 图标来源解析与上游占位图识别
 │   ├── icons.ts                # 图标映射
 │   └── utils.ts                # 通用工具
 ├── types/                      # TypeScript 类型
@@ -52,7 +66,9 @@ prisma/
 ├── schema.prisma               # 数据模型
 └── onenav.db                   # SQLite 数据库文件
 scripts/
-└── migrate.ts                  # 数据迁移脚本
+├── migrate.ts                  # 数据迁移脚本
+└── normalize-category-roots.ts # 根分类 fid=0 → NULL 修正
+tests/                          # node:test 测试（npm test）
 ```
 
 ## 数据库模型
@@ -88,6 +104,12 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
 npx tsx scripts/migrate.ts
 ```
 
+旧数据里根分类的 `fid = 0` 会让首页为空，需要改成 `NULL`。先 dry-run 查看，再按输出提示带 `--apply --backup <路径> --expected-sha256 <值>` 执行（数据库须在本地磁盘）：
+
+```bash
+npx tsx scripts/normalize-category-roots.ts --database <数据库绝对路径>
+```
+
 ### 初始化数据库（无旧数据）
 
 ```bash
@@ -97,7 +119,7 @@ npx prisma db push
 ### 日常使用（推荐）
 
 ```bash
-npm run build -- --webpack && npm start
+npm run build && npm start
 ```
 
 生产模式下所有页面预编译，响应时间 **1-30ms**，等同原 PHP 项目体验。
@@ -105,12 +127,18 @@ npm run build -- --webpack && npm start
 ### 开发模式
 
 ```bash
-npm run dev -- --webpack
+npm run dev
 ```
 
-开发模式支持热更新（HMR）。首次访问每个页面有编译延迟（正常现象），后续访问即时响应。
+开发模式支持热更新（HMR）。首次访问每个页面有编译延迟（正常现象），后续访问即时响应。项目在网络共享盘上时需设置 `WATCHPACK_POLLING=true`，否则页面可能空白。
 
-> **注意**: 当前 Windows 环境下 Turbopack 与 Prisma 存在 symlink 兼容问题，需使用 `--webpack`。`--turbo` 暂不可用。
+> **注意**: 当前 Windows 环境下 Turbopack 与 Prisma 存在 symlink 兼容问题，`dev` 和 `build` 脚本已固定使用 `--webpack`。
+
+### 测试
+
+```bash
+npm test
+```
 
 ## 路由总览
 
@@ -124,6 +152,7 @@ npm run dev -- --webpack
 | `/admin/import` | Client | 书签导入 |
 | `/admin/settings/site` | Client | 站点设置 |
 | `/click/[id]` | SSR | 链接点击跳转 |
+| `/site-icon?u=<origin>` | Route Handler | favicon 代理；无图标时返回 204 |
 
 ## API 端点
 
@@ -135,13 +164,14 @@ npm run dev -- --webpack
 | `/api/categories/[id]` | GET/PUT/DELETE | 单个分类 CRUD |
 | `/api/links` | GET/POST | 链接列表/创建 |
 | `/api/links/[id]` | GET/PUT/DELETE | 单个链接 CRUD |
+| `/api/links/export` | GET | 导出浏览器书签 HTML |
 | `/api/info` | GET | 站点统计 |
 | `/api/settings/site` | GET/PUT | 站点设置 |
 
-所有 `/api/*` 端点和 `/admin/*` 路由受代理认证保护。公开端点白名单：`/api/info`、`/api/auth/login`、`/api/auth/logout`。
+所有 `/api/*` 端点和 `/admin/*` 路由受代理认证保护，仅 `/api/auth/login`、`/api/auth/logout` 公开；各 API 路由内部还会再次校验 Session。
 
 ## 认证
 
-Cookie-based 认证。登录时服务端生成 session token，设置 httpOnly Cookie（30 天有效期）。
+登录成功后，服务端用 `AUTH_SECRET` 对 Session 载荷（用户名、签发和过期时间）做 HMAC-SHA256 签名，写入 httpOnly、`SameSite=Lax` 的 `onenav_token` Cookie（生产环境带 `Secure`，30 天有效期）。服务端不保存 Session，校验只依赖签名和过期时间，因此轮换 `AUTH_SECRET` 会让所有 Session 失效。
 
-密码存储：首次登录自动将旧 MD5 哈希升级为 bcrypt。
+密码以 bcrypt 存储；首次登录时自动将旧项目的 MD5 哈希升级为 bcrypt。

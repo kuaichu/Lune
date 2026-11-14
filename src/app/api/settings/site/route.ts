@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     try {
       settings = JSON.parse(option.value)
     } catch {
-      settings = { title: 'OneNav' }
+      settings = { title: 'Lune' }
     }
   }
   return NextResponse.json({ code: 0, data: settings })
@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest) {
 
   const body = await request.json()
   const value = JSON.stringify({
-    title: body.title || 'OneNav',
+    title: body.title || 'Lune',
     logo: body.logo || '',
     subtitle: body.subtitle || '',
     keywords: body.keywords || '',
