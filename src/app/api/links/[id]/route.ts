@@ -49,7 +49,7 @@ export async function PUT(
     return NextResponse.json({ code: -2000, err_msg: '标题不能为空！' }, { status: 400 })
   }
 
-  const existing = await prisma.link.findUnique({ where: { id }, select: { id: true } })
+  const existing = await prisma.link.findUnique({ where: { id }, select: { id: true, url: true } })
   if (!existing) {
     return NextResponse.json({ code: -1, err_msg: '链接不存在' }, { status: 404 })
   }
@@ -67,11 +67,14 @@ export async function PUT(
     return NextResponse.json({ code: -2000, err_msg: categoryValidation.error }, { status: 400 })
   }
 
+  const nextUrl = url || ''
   const link = await prisma.link.update({
     where: { id },
     data: {
       title: title.trim(),
-      url: url || '',
+      url: nextUrl,
+      // A previous check result says nothing about a new URL.
+      ...(nextUrl !== existing.url ? { checkStatus: 0, lastCheckedTime: '' } : {}),
       ...(categoryValidation.categoryId !== undefined ? { categoryId: categoryValidation.categoryId } : {}),
       description: description || '',
       weight: weight ?? 0,

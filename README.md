@@ -20,6 +20,7 @@
 - **深色模式**：首页默认跟随系统，可手动切换深浅色，切换时用 View Transitions 渐变过渡（系统开启减少动效时跳过）。`/login` 和 `/admin` 固定为浅色。颜色全部定义为 `src/app/globals.css` 里的 CSS 变量。
 - **站点图标**：没有自定义图标的链接通过 `/site-icon` 由服务端代理获取 favicon；取不到时显示按域名着色的首字母头像。
 - **搜索**：首页按标题、描述和 URL 搜索。`Ctrl/⌘ + K` 或 `/` 聚焦，`Esc` 清除。
+- **链接探活**：后台「链接管理」可批量或逐条检测链接，结果分为正常、异常、未知（WAF/防爬拦截或非 HTTP 链接）和未检测，可按状态筛选。检测从服务器发出，服务器访问不到的内网或地区限制站点可能显示为异常。修改 URL 后会重置并自动重测。
 - **书签导入导出**：后台可导入浏览器书签，也可通过 `/api/links/export` 导出为浏览器书签 HTML。
 
 ## 项目结构
@@ -165,6 +166,7 @@ npm test
 | `/api/links` | GET/POST | 链接列表/创建 |
 | `/api/links/[id]` | GET/PUT/DELETE | 单个链接 CRUD |
 | `/api/links/export` | GET | 导出浏览器书签 HTML |
+| `/api/links/check` | POST | 检测一批链接（`{ ids }`，最多 50 个）并写回状态 |
 | `/api/info` | GET | 站点统计 |
 | `/api/settings/site` | GET/PUT | 站点设置 |
 

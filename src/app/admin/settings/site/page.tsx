@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Save, Settings, Sparkle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Select } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -103,14 +104,15 @@ export default function SiteSettingsPage() {
               <Input value={settings.keywords} onChange={(e) => update('keywords', e.target.value)} className="h-11 rounded-[13px] border-admin-line" />
             </Field>
             <Field label="链接模式">
-              <select
+              <Select
+                aria-label="链接模式"
                 value={settings.link_model}
-                onChange={(e) => update('link_model', e.target.value)}
-                className="h-11 w-full rounded-[13px] border border-admin-line bg-admin-surface px-3 text-admin-ink outline-none"
-              >
-                <option value="direct">直连</option>
-                <option value="click">跳转页面</option>
-              </select>
+                onValueChange={(next) => update('link_model', next)}
+                options={[
+                  { value: 'direct', label: '直连' },
+                  { value: 'click', label: '跳转页面' },
+                ]}
+              />
             </Field>
             <Field label="每分类显示链接数量">
               <Input type="number" value={settings.link_num} onChange={(e) => update('link_num', e.target.value)} className="h-11 rounded-[13px] border-admin-line" />

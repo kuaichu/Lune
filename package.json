@@ -6,7 +6,7 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "test": "tsx --test tests/auth.test.ts tests/admin-auth.integration.test.ts tests/bookmark-export.test.ts tests/category-domain.test.ts tests/category-visibility.test.ts tests/favicon.test.ts tests/normalize-category-roots.test.ts tests/public-homepage-data.test.ts",
+    "test": "tsx --test tests/auth.test.ts tests/admin-auth.integration.test.ts tests/bookmark-export.test.ts tests/category-domain.test.ts tests/category-visibility.test.ts tests/favicon.test.ts tests/link-check.test.ts tests/normalize-category-roots.test.ts tests/public-homepage-data.test.ts",
     "lint": "eslint"
   },
   "dependencies": {

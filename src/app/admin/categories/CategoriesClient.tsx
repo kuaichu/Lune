@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Select } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -345,12 +346,17 @@ export function CategoriesClient({ initialCategories }: { initialCategories: Cat
               <Input value={name} onChange={(e) => setName(e.target.value)} className="h-11 rounded-[13px] border-admin-line" required />
             </Field>
             <Field label="父级分类">
-              <select value={parentId} onChange={(e) => setParentId(e.target.value)} className="h-11 w-full rounded-[13px] border border-admin-line bg-admin-surface px-3 text-admin-ink outline-none">
-                <option value="">顶级分类</option>
-                {topLevel.filter((category) => category.id !== editing?.id).map((category) => (
-                  <option key={category.id} value={category.id}>{category.name}</option>
-                ))}
-              </select>
+              <Select
+                aria-label="父级分类"
+                value={parentId}
+                onValueChange={setParentId}
+                options={[
+                  { value: '', label: '顶级分类' },
+                  ...topLevel
+                    .filter((category) => category.id !== editing?.id)
+                    .map((category) => ({ value: String(category.id), label: category.name })),
+                ]}
+              />
             </Field>
             <Field label="权重">
               <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} className="h-11 rounded-[13px] border-admin-line" />

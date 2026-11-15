@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Select } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { filterPublicCategories, type PublicCategoryData } from '@/lib/public-homepage-data'
 
@@ -440,17 +441,15 @@ function QuickAddForm({
         onChange={(e) => setUrl(e.target.value)}
         required
       />
-      <select
-        className="w-full h-12 rounded-xl border border-line-input bg-surface-input px-4 text-ink outline-none focus:border-purple-primary"
+      <Select
+        tone="public"
+        aria-label="选择分类"
         value={categoryId}
-        onChange={(e) => setCategoryId(e.target.value)}
-        required
-      >
-        <option value="">选择分类</option>
-        {categories.map((c) => (
-          <option key={c.id} value={c.id}>{c.name}</option>
-        ))}
-      </select>
+        onValueChange={setCategoryId}
+        placeholder="选择分类"
+        options={categories.map((c) => ({ value: String(c.id), label: c.name }))}
+        className="h-12 rounded-xl px-4 font-normal"
+      />
       {categories.length === 0 && (
         <p className="text-sm font-semibold text-ink-muted">
           当前没有分类，请先前往 <a href="/admin/categories" className="text-purple-primary">分类管理</a> 创建分类。

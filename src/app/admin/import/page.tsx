@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CheckCircle, FileText, Sparkle, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Select } from '@/components/ui/select'
 import { toast } from 'sonner'
 
 interface ParsedBookmark {
@@ -127,17 +128,14 @@ export default function ImportPage() {
                   <h2 className="text-lg font-extrabold text-admin-ink-strong">导入预览</h2>
                   <p className="mt-1 text-sm font-semibold text-admin-muted">解析到 {bookmarks.length} 个书签，预览前 50 个</p>
                 </div>
-                <select
+                <Select
+                  aria-label="目标分类"
                   value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                  required
-                  className="h-11 rounded-[13px] border border-admin-line bg-admin-surface px-4 text-sm font-bold text-admin-ink-soft outline-none"
-                >
-                  <option value="">选择目标分类</option>
-                  {categoryOptions.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
+                  onValueChange={setCategoryId}
+                  placeholder="选择目标分类"
+                  options={categoryOptions.map((c) => ({ value: String(c.id), label: c.name }))}
+                  className="w-64 px-4 text-admin-ink-soft max-md:w-full"
+                />
               </div>
 
               <div className="max-h-[420px] space-y-2 overflow-auto pr-1">
