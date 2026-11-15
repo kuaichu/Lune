@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { ChevronDown, Home, LogOut } from 'lucide-react'
+import { ChevronDown, Home, LogOut, Menu } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +20,15 @@ const pageTitles: Record<string, string> = {
   '/admin/settings/site': '站点设置',
 }
 
-export function AdminTopbar({ collapsed }: { collapsed: boolean }) {
+export function AdminTopbar({
+  collapsed,
+  mobileNavOpen,
+  onMobileMenuClick,
+}: {
+  collapsed: boolean
+  mobileNavOpen: boolean
+  onMobileMenuClick: () => void
+}) {
   const pathname = usePathname()
   const router = useRouter()
   const title = pageTitles[pathname] || '仪表盘'
@@ -35,13 +43,25 @@ export function AdminTopbar({ collapsed }: { collapsed: boolean }) {
       'fixed top-0 right-0 z-40 flex h-[78px] items-center justify-between border-b border-admin-line bg-admin-tint-soft/82 px-8 backdrop-blur-2xl transition-[left] duration-300 ease-out motion-reduce:transition-none max-md:left-0 max-md:h-16 max-md:px-4',
       collapsed ? 'left-[88px]' : 'left-[250px]'
     )}>
-      <Link
-        href="/"
-        className="flex items-center gap-3 text-sm font-extrabold text-admin-ink-soft transition-colors hover:text-admin-accent"
-      >
-        <Home className="h-4 w-4" />
-        <span>{title}</span>
-      </Link>
+      <div className="flex min-w-0 items-center gap-2">
+        <button
+          type="button"
+          onClick={onMobileMenuClick}
+          aria-label="打开后台菜单"
+          aria-controls="admin-sidebar"
+          aria-expanded={mobileNavOpen}
+          className="-ml-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-admin-violet transition-colors hover:bg-admin-tint hover:text-admin-accent md:hidden"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+        <Link
+          href="/"
+          className="flex min-w-0 items-center gap-3 text-sm font-extrabold text-admin-ink-soft transition-colors hover:text-admin-accent"
+        >
+          <Home className="h-4 w-4 shrink-0 max-md:hidden" />
+          <span className="truncate">{title}</span>
+        </Link>
+      </div>
 
       <div className="flex items-center gap-2">
         <ThemeToggle className="h-10 w-10 rounded-full bg-transparent text-admin-violet hover:bg-admin-tint hover:text-admin-accent" />
