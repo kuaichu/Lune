@@ -16,6 +16,7 @@ interface LinkData {
   url: string
   description: string
   property: number
+  checkStatus?: number
 }
 
 interface CategorySectionProps {
@@ -65,6 +66,7 @@ export function CategorySection({
               url={link.url}
               property={link.property}
               description={link.description}
+              checkStatus={link.checkStatus}
             />
           </LinkContextMenu>
         ))}

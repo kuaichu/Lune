@@ -105,6 +105,8 @@
   --ink-subicon: #8a8ee6;
   --surface-card: rgba(255, 255, 255, 0.96);
   --surface-card-hover: rgba(255, 255, 255, 0.98);
+  /* Opaque approximation of a link card, for outlines that must cut into it (status dot ring). */
+  --surface-card-solid: #ffffff;
   --surface-input: #ffffff;
   --surface-search: rgba(255, 255, 255, 0.92);
   --surface-drawer: #fbfbff;
@@ -411,6 +413,7 @@ a, a:hover, a:focus, a:visited {
   --ink-subicon: #8f93e6;
   --surface-card: rgba(32, 35, 70, 0.78);
   --surface-card-hover: rgba(42, 45, 88, 0.92);
+  --surface-card-solid: #1f2143;
   --surface-input: #1b1d3a;
   --surface-search: rgba(28, 30, 62, 0.88);
   --surface-drawer: #14162f;

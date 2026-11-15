@@ -15,6 +15,8 @@ export type PublicLinkData = {
   url: string
   description: string
   property: number
+  // Link check result (see lib/link-check); missing means unchecked.
+  checkStatus?: number
 }
 
 export type PublicCategoryData = {

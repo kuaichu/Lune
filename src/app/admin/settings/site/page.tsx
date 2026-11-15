@@ -22,6 +22,7 @@ export default function SiteSettingsPage() {
     link_model: 'direct',
     link_num: '30',
     sidebar_auto_expand: true,
+    show_link_status: true,
   })
   const [loading, setLoading] = useState(false)
 
@@ -36,6 +37,7 @@ export default function SiteSettingsPage() {
           ...data.data,
           link_num: String(data.data.link_num || 30),
           sidebar_auto_expand: data.data.sidebar_auto_expand !== false,
+          show_link_status: data.data.show_link_status !== false,
         }))
       }
     }
@@ -135,6 +137,19 @@ export default function SiteSettingsPage() {
             <div>
               <Label htmlFor="sidebar-auto-expand" className="font-bold text-admin-ink">滚动时自动展开侧栏分组</Label>
               <p className="mt-1 text-sm font-semibold text-admin-muted">首页滚动到某个分类时展开侧栏对应分组，离开后自动收起</p>
+            </div>
+          </div>
+
+          <div className="mt-4 flex items-start gap-2">
+            <Checkbox
+              id="show-link-status"
+              checked={settings.show_link_status}
+              onCheckedChange={(c) => setSettings((prev) => ({ ...prev, show_link_status: c === true }))}
+              className="mt-0.5"
+            />
+            <div>
+              <Label htmlFor="show-link-status" className="font-bold text-admin-ink">首页标记失效链接</Label>
+              <p className="mt-1 text-sm font-semibold text-admin-muted">探活检测为异常的链接，在首页图标右下角显示一个小红点，访客也能看到</p>
             </div>
           </div>
 

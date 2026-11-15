@@ -34,6 +34,7 @@ export async function PUT(request: NextRequest) {
     link_model: body.link_model || 'direct',
     link_num: body.link_num || 30,
     sidebar_auto_expand: body.sidebar_auto_expand !== false,
+    show_link_status: body.show_link_status !== false,
   })
 
   await prisma.option.upsert({
