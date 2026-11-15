@@ -125,6 +125,18 @@ npm run build && npm start
 
 生产模式下所有页面预编译，响应时间 **1-30ms**，等同原 PHP 项目体验。
 
+### 精简部署（standalone）
+
+`next.config.ts` 启用了 `output: 'standalone'`，构建后会生成 `.next/standalone/`，只含运行所需的文件，服务器上无需源码和完整 `node_modules`（线上即按此方式部署）。standalone 包默认不含静态资源，需要先复制进去再启动：
+
+```bash
+npm run build
+cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
+node .next/standalone/server.js
+```
+
+运行时仍需 `DATABASE_URL`、`AUTH_SECRET` 等环境变量；端口和监听地址用 `PORT`、`HOSTNAME` 指定。启用 standalone 后 `npm start` 仍可本地使用，但 Next 会提示改用 `server.js`。
+
 ### 开发模式
 
 ```bash
