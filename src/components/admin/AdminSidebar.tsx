@@ -11,6 +11,7 @@ import {
   Upload,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { LuneMark } from '@/components/shared/LuneMark'
 
 const menuItems = [
   { href: '/admin', icon: LayoutDashboard, label: '仪表盘' },
@@ -59,7 +60,7 @@ export function AdminSidebar({
         <div className="flex h-full flex-col px-4 pb-7 pt-7">
           <Link href="/" onClick={onMobileClose} className="grid h-12 grid-cols-[56px_minmax(0,1fr)] items-center no-underline" title="Lune">
             <span className="flex justify-center">
-              <LuneAdminMark />
+              <LuneMark size={44} />
             </span>
             <span
               className={cn(
@@ -137,21 +138,5 @@ export function AdminSidebar({
         </div>
       </aside>
     </>
-  )
-}
-
-// Same geometry as the old cover disc: 32px circle centred at (25px, 12px) of the 28px moon.
-const CRESCENT_MASK = 'radial-gradient(circle at 25px 12px, transparent 15.5px, #000 16px)'
-
-function LuneAdminMark() {
-  return (
-    <div className="relative h-9 w-9">
-      <div className="absolute inset-0 rounded-full bg-admin-tint" />
-      {/* Cut the crescent out with a mask instead of covering it with a background-coloured disc, which showed through on other backgrounds. */}
-      <div
-        className="absolute left-2 top-1.5 h-7 w-7 rounded-full bg-gradient-to-br from-[#8d7aff] to-[#6e5bf0]"
-        style={{ maskImage: CRESCENT_MASK, WebkitMaskImage: CRESCENT_MASK }}
-      />
-    </div>
   )
 }

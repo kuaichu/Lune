@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ThemeToggle } from '@/components/shared/ThemeToggle'
+import { LuneMark } from '@/components/shared/LuneMark'
 import {
   ArrowLeft,
   Bookmark,
@@ -301,22 +302,5 @@ export default function LoginPage() {
         </section>
       </div>
     </main>
-  )
-}
-
-function LuneMark() {
-  return (
-    <div className="relative h-16 w-16">
-      {/* Masked crescent (36px cut-out centred at 35px, 22px of the 48px moon); a covering disc would show on the card's glass background. */}
-      <div
-        className="absolute inset-2 rounded-full bg-gradient-to-br from-[#9a8cff] via-[#725ff3] to-[#aa54ff]"
-        style={{
-          maskImage: 'radial-gradient(circle at 35px 22px, transparent 17.5px, #000 18px)',
-          WebkitMaskImage: 'radial-gradient(circle at 35px 22px, transparent 17.5px, #000 18px)',
-        }}
-      />
-      <Sparkle className="absolute right-1 top-2 h-3.5 w-3.5 text-[#907cff]" strokeWidth={2} />
-      <Sparkle className="absolute right-2 top-7 h-2.5 w-2.5 text-[#a775ff]" strokeWidth={2} />
-    </div>
   )
 }
