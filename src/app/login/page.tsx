@@ -141,7 +141,7 @@ export default function LoginPage() {
               aria-hidden="true"
             >
               <defs>
-                <radialGradient id="lune-crescent-fill" cx="36%" cy="48%" r="72%">
+                <radialGradient id="lune-crescent-fill" cx="30%" cy="48%" r="72%">
                   <stop offset="0%" stopColor="#ffffff" />
                   <stop offset="56%" stopColor="#fff2ff" />
                   <stop offset="100%" stopColor="#d5c4ff" />
@@ -160,13 +160,14 @@ export default function LoginPage() {
                   </feMerge>
                 </filter>
               </defs>
+              {/* Moon disc (r72 @130,113) minus a shadow disc (r54 @163,107): same proportions as the Logo crescent. */}
               <path
-                d="M156 40C103 49 70 88 72 126c2 36 30 62 71 59-31-17-47-48-40-82 6-29 26-52 53-63Z"
+                d="M170.6 53.5A72 72 0 1 0 188.9 154.4A54 54 0 1 1 170.6 53.5Z"
                 fill="url(#lune-crescent-fill)"
                 filter="url(#lune-crescent-glow)"
               />
               <path
-                d="M123 57C105 74 94 97 92 122"
+                d="M70.8 91.5A63 63 0 0 0 75.4 144.5"
                 fill="none"
                 stroke="rgba(255,255,255,0.20)"
                 strokeLinecap="round"
