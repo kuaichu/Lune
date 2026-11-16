@@ -2,6 +2,27 @@
 
 私人书签导航管理器。从 PHP + SQLite3 重构为 Next.js + TypeScript + Prisma + Tailwind CSS + shadcn/ui。
 
+![首页（浅色）](docs/screenshots/home-light.png)
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/home-dark.png" alt="首页（深色）" /></td>
+    <td width="50%"><img src="docs/screenshots/login.png" alt="登录页" /></td>
+  </tr>
+  <tr>
+    <td align="center">首页 · 深色模式</td>
+    <td align="center">登录页</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/admin-dashboard.png" alt="后台仪表盘" /></td>
+    <td width="50%"><img src="docs/screenshots/admin-links.png" alt="后台链接管理" /></td>
+  </tr>
+  <tr>
+    <td align="center">后台仪表盘</td>
+    <td align="center">链接管理 · 探活状态</td>
+  </tr>
+</table>
+
 ## 技术栈
 
 | 层 | 技术 |
@@ -11,16 +32,19 @@
 | 数据库 | SQLite (via better-sqlite3) |
 | ORM | Prisma 5 |
 | 样式 | Tailwind CSS v4 + shadcn/ui |
-| 主题 | next-themes（首页支持深浅色） |
+| 主题 | next-themes（全站深浅色） |
 | 图标 | lucide-react |
 | 认证 | HMAC 签名的 Session Cookie，密码以 bcrypt 存储 |
 
 ## 功能要点
 
-- **深色模式**：首页默认跟随系统，可手动切换深浅色，切换时用 View Transitions 渐变过渡（系统开启减少动效时跳过）。`/login` 和 `/admin` 固定为浅色。颜色全部定义为 `src/app/globals.css` 里的 CSS 变量。
+- **深色模式**：首页、登录页和后台都支持深浅色，默认跟随系统，可手动切换，切换时用 View Transitions 渐变过渡（系统开启减少动效时跳过）。颜色全部定义为 `src/app/globals.css` 里的 CSS 变量。
 - **站点图标**：没有自定义图标的链接通过 `/site-icon` 由服务端代理获取 favicon；取不到时显示按域名着色的首字母头像。
 - **搜索**：首页按标题、描述和 URL 搜索。`Ctrl/⌘ + K` 或 `/` 聚焦，`Esc` 清除。
-- **链接探活**：后台「链接管理」可批量或逐条检测链接，结果分为正常、异常、未知（WAF/防爬拦截或非 HTTP 链接）和未检测，可按状态筛选。检测从服务器发出，服务器访问不到的内网或地区限制站点可能显示为异常。修改 URL 后会重置并自动重测。
+- **侧栏导航**：首页滚动到某个分类时自动展开侧栏对应分组，离开后收起，可在站点设置里关闭。
+- **链接探活**：后台「链接管理」可批量或逐条检测链接，结果分为正常、异常、未知（WAF/防爬拦截或非 HTTP 链接）和未检测，可按状态筛选。检测从服务器发出，服务器访问不到的内网或地区限制站点可能显示为异常。修改 URL 后会重置并自动重测。检测为异常的链接会在首页图标右下角显示小红点，可在站点设置里关闭。
+- **批量管理**：后台可勾选多条链接，批量检测、移动分类、设为公开或私有、删除。
+- **移动端**：首页和后台都适配窄屏，后台在手机上用抽屉式导航。
 - **书签导入导出**：后台可导入浏览器书签，也可通过 `/api/links/export` 导出为浏览器书签 HTML。
 
 ## 项目结构
@@ -41,7 +65,7 @@ src/
 │   ├── api/                    # API 路由
 │   │   ├── auth/               # 登录/登出
 │   │   ├── categories/         # 分类 CRUD
-│   │   ├── links/              # 链接 CRUD、书签导出（export/）
+│   │   ├── links/              # 链接 CRUD、探活（check/）、批量操作（batch/）、书签导出（export/）
 │   │   └── settings/site/      # 站点配置
 │   ├── click/[id]/             # 链接点击重定向
 │   └── site-icon/              # favicon 代理
@@ -57,6 +81,7 @@ src/
 │   ├── category-*.ts           # 分类层级与可见性
 │   ├── public-homepage-data.ts # 首页数据与搜索
 │   ├── bookmark-export.ts      # 书签 HTML 导出
+│   ├── link-check.ts           # 链接探活与状态判定
 │   ├── favicon*.ts             # 图标来源解析与上游占位图识别
 │   ├── icons.ts                # 图标映射
 │   └── utils.ts                # 通用工具
@@ -76,7 +101,7 @@ tests/                          # node:test 测试（npm test）
 三张核心表：
 
 - **on_categorys** — 分类（id, name, fid/parent_id, weight, property, font_icon）
-- **on_links** — 书签链接（id, fid/category_id, title, url, description, weight, property）
+- **on_links** — 书签链接（id, fid/category_id, title, url, description, weight, property, check_status, last_checked_time）
 - **on_options** — 键值配置（key, value）
 
 ## 快速开始
@@ -178,6 +203,7 @@ npm test
 | `/api/links/[id]` | GET/PUT/DELETE | 单个链接 CRUD |
 | `/api/links/export` | GET | 导出浏览器书签 HTML |
 | `/api/links/check` | POST | 检测一批链接（`{ ids }`，最多 50 个）并写回状态 |
+| `/api/links/batch` | POST | 批量删除、移动分类或修改可见性（`{ action, ids }`，最多 1000 个） |
 | `/api/settings/site` | GET/PUT | 站点设置 |
 
 所有 `/api/*` 端点和 `/admin/*` 路由受代理认证保护，仅 `/api/auth/login`、`/api/auth/logout` 公开；各 API 路由内部还会再次校验 Session。
