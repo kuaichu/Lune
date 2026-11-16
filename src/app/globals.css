@@ -376,7 +376,6 @@ a, a:hover, a:focus, a:visited {
   [data-slot="dropdown-menu-sub-content"],
   [data-slot="context-menu-content"],
   [data-slot="context-menu-sub-content"],
-  [data-slot="tooltip-content"],
   [data-slot="collapsible-content"] {
     animation: none !important;
     transition-duration: 0.01ms !important;

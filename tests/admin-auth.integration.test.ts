@@ -70,14 +70,13 @@ function request(
 }
 
 async function loadProtectedRoutes() {
-  const [categories, category, links, link, exportLinks, settings, info] = await Promise.all([
+  const [categories, category, links, link, exportLinks, settings] = await Promise.all([
     import('../src/app/api/categories/route'),
     import('../src/app/api/categories/[id]/route'),
     import('../src/app/api/links/route'),
     import('../src/app/api/links/[id]/route'),
     import('../src/app/api/links/export/route'),
     import('../src/app/api/settings/site/route'),
-    import('../src/app/api/info/route'),
   ])
 
   const categoryContext = { params: Promise.resolve({ id: '1' }) }
@@ -99,7 +98,6 @@ async function loadProtectedRoutes() {
         ['DELETE /api/links/[id]', () => link.DELETE(request('/api/links/1', { method: 'DELETE', token }), linkContext)],
         ['GET /api/settings/site', () => settings.GET(request('/api/settings/site', { token }))],
         ['PUT /api/settings/site', () => settings.PUT(request('/api/settings/site', { method: 'PUT', token, body: {} }))],
-        ['GET /api/info', () => info.GET(request('/api/info', { token }))],
       ] as const
     },
     validCases(token: string) {
@@ -116,7 +114,6 @@ async function loadProtectedRoutes() {
         ['DELETE /api/links/[id]', () => link.DELETE(request('/api/links/1', { method: 'DELETE', token }), linkContext)],
         ['GET /api/settings/site', () => settings.GET(request('/api/settings/site', { token }))],
         ['PUT /api/settings/site', () => settings.PUT(request('/api/settings/site', { method: 'PUT', token, body: { title: 'Lune' } }))],
-        ['GET /api/info', () => info.GET(request('/api/info', { token }))],
       ] as const
     },
   }

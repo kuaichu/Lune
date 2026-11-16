@@ -42,7 +42,6 @@ src/
 │   │   ├── auth/               # 登录/登出
 │   │   ├── categories/         # 分类 CRUD
 │   │   ├── links/              # 链接 CRUD、书签导出（export/）
-│   │   ├── info/               # 站点统计
 │   │   └── settings/site/      # 站点配置
 │   ├── click/[id]/             # 链接点击重定向
 │   └── site-icon/              # favicon 代理
@@ -179,7 +178,6 @@ npm test
 | `/api/links/[id]` | GET/PUT/DELETE | 单个链接 CRUD |
 | `/api/links/export` | GET | 导出浏览器书签 HTML |
 | `/api/links/check` | POST | 检测一批链接（`{ ids }`，最多 50 个）并写回状态 |
-| `/api/info` | GET | 站点统计 |
 | `/api/settings/site` | GET/PUT | 站点设置 |
 
 所有 `/api/*` 端点和 `/admin/*` 路由受代理认证保护，仅 `/api/auth/login`、`/api/auth/logout` 公开；各 API 路由内部还会再次校验 Session。
